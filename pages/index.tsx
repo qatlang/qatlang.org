@@ -191,7 +191,7 @@ function Examples() {
 						/>
 					</div>
 					<div
-						className="shadow-lg dark:shadow-none w-[100%] max-h-72 border-2 border-solid border-gray-400 dark:border-styleGray bg-[#dce7f9] dark:bg-[#303030] rounded-lg pr-1 pt-1 font-bold text-black dark:text-[#dddddd] flex flex-col align-top justify-start overflow-x-clip overflow-y-auto"
+						className="shadow-lg dark:shadow-none w-[100%] max-h-72 border-2 border-midGray bg-[#dce7f9] dark:bg-[#303030] rounded-lg pr-1 pt-1 font-bold text-black dark:text-[#dddddd] flex flex-col align-top justify-start overflow-x-clip overflow-y-auto"
 						style={{
 							fontSize: size.isVertical() ? "3.3vmin" : "1.8vmin",
 						}}
@@ -283,7 +283,7 @@ function ProjectInfo(props: { latestCommit: ICommit | null }) {
 				//   props.workHours &&
 				props.latestCommit && (
 					<>
-						<div className="flex flex-col shadow-lg dark:shadow-none font-mono lg:h-64 self-center border-2 border-solid border-gray-300 dark:border-styleGray lg:w-[60%] lg:mx-0 w-[95%] bg-white dark:bg-black rounded-3xl items-start justify-start p-4 sm:p-7">
+						<div className="flex flex-col shadow-lg dark:shadow-none font-mono lg:h-64 self-center border-2 border-solid border-midGray lg:w-[60%] lg:mx-0 w-[95%] bg-white dark:bg-black rounded-3xl items-start justify-start p-4 sm:p-7">
 							<div className="flex flex-row align-middle justify-center mb-4 text-xs sm:text-sm">
 								<p className="py-1">Latest Commit in</p>
 								<div className="h-fit flex flex-row self-center align-middle justify-center text-white bg-styleGreen font-bold py-[0.13rem] sm:py-1 px-1 sm:px-2 mx-2 rounded-md sm:rounded-lg">
@@ -318,7 +318,7 @@ function ProjectInfo(props: { latestCommit: ICommit | null }) {
 								{props.latestCommit.message}
 							</Markdown>
 						</div>
-						<div className="shadow-lg dark:shadow:none font-mono flex flex-row flex-grow md:text-xl border-solid border-2 border-gray-300 dark:border-styleGray lg:h-64 lg:w-auto lg:mt-0 mt-3 sm:mt-5 w-[95%] lg:self-auto self-center align-middle justify-center bg-white dark:bg-black rounded-3xl lg:ml-5 p-5">
+						<div className="shadow-lg dark:shadow:none font-mono flex flex-row flex-grow md:text-xl border-solid border-2 border-midGray lg:h-64 lg:w-auto lg:mt-0 mt-3 sm:mt-5 w-[95%] lg:self-auto self-center align-middle justify-center bg-white dark:bg-black rounded-3xl lg:ml-5 p-5">
 							<div className="font-mono flex flex-col flex-grow self-center">
 								<div className="flex flex-row w-auto align-middle justify-center">
 									<div className="flex flex-col mr-5 self-center">

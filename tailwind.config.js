@@ -17,20 +17,26 @@ module.exports = {
 			black: "#000000",
 			paleWhite: "#bbbbbb",
 			styleGreen: "#128f5f",
+			midGray: "#777777",
 			...colors,
 		},
 		borderColor: {
-			styleGray: "#444444",
+			midGray: "#77777788",
+			darkGray: "#444444",
 			lightGray: "#bbbbbb",
 			styleGreen: "#128f5f",
 			...colors,
 		},
 		extend: {
+			boxShadow: {
+				spread: "0px 0px 10px 0px #777777",
+			},
 			gridTemplateColumns: {
 				fluid: "repeat(auto-fit, minmax(15rem, 1fr))",
 			},
 			colors: {
 				styleGreen: "#128f5f",
+				gold: "#fec033",
 				...colors,
 			},
 		},

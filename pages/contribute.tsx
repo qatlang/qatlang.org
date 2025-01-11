@@ -111,7 +111,7 @@ export default function Contribute() {
 						</div>
 					</div>
 				</div>
-				<div className="flex flex-col mt-14 md:mt-0 self-center w-[30rem] px-6 py-4 bg-[#ffffff] dark:bg-[#222222] border-2 border-solid border-lightGray dark:border-styleGray rounded-xl shadow-lg">
+				<div className="flex flex-col mt-14 md:mt-0 self-center w-[30rem] px-6 py-4 bg-[#ffffff] dark:bg-[#222222] border-2 border-midGray rounded-xl shadow-lg">
 					<div className="flex flex-row self-center">
 						<HelpIcon />
 						<div className="flex flex-col px-4 text-4xl font-bold self-center">

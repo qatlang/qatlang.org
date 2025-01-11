@@ -178,7 +178,7 @@ function NavBar() {
 		const ModeButton = (props: { mode: string }) => {
 			return (
 				<div
-					className="my-2 transition-colors rounded-lg px-3 py-1 border-2 border-solid border-gray-300 dark:border-styleGray hover:border-black dark:hover:border-white hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black cursor-pointer uppercase font-mono font-bold"
+					className="my-2 transition-colors rounded-lg px-3 py-1 border-2 border-midGray hover:border-black dark:hover:border-white hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black cursor-pointer uppercase font-mono font-bold"
 					style={{
 						borderColor:
 							darkModeValue === props.mode ? "#128f5f" : undefined,
@@ -196,7 +196,7 @@ function NavBar() {
 		};
 
 		return (
-			<div className="transition-colors relative group mx-4 p-2 w-12 h-12 border-2 border-solid rounded-xl border-gray-300 dark:border-styleGray bg-white hover:bg-black dark:bg-black dark:hover:bg-white">
+			<div className="transition-colors relative group mx-4 p-2 w-12 h-12 border-2 border-solid rounded-xl border-midGray bg-white hover:bg-black dark:bg-black dark:hover:bg-white">
 				<div className="z-50 shadow-lg rounded-lg invisible absolute top-10 right-0 group-hover:visible py-2 px-4 text-lg bg-white dark:bg-black">
 					<ModeButton mode="dark" />
 					<ModeButton mode="light" />

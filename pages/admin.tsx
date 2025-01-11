@@ -43,7 +43,7 @@ export default function Admin() {
 						setEmail(ev.target.value);
 						setError(null);
 					}}
-					className="place-self-center mb-4 w-72 h-16 py-2 px-4 border-2 border-solid border-gray-300 dark:border-styleGray rounded-xl"
+					className="place-self-center mb-4 w-72 h-16 py-2 px-4 border-2 border-solid border-midGray rounded-xl"
 				/>
 				<input
 					name="Password"
@@ -53,7 +53,7 @@ export default function Admin() {
 						setPassword(ev.target.value);
 						setError(null);
 					}}
-					className="place-self-center w-72 h-16 py-2 px-4 border-2 border-solid border-gray-300 dark:border-styleGray rounded-xl"
+					className="place-self-center w-72 h-16 py-2 px-4 border-2 border-solid border-midGray rounded-xl"
 				/>
 				<div
 					className="mt-10 select-none cursor-pointer transition-colors w-fit py-2 px-4 text-2xl font-bold rounded-xl self-center bg-styleGreen text-white hover:bg-black active:bg-white hover:text-white dark:hover:bg-white dark:active:bg-black dark:hover:text-black"

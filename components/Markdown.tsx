@@ -18,7 +18,7 @@ export function CodeBlock(props: CodeProps & { allowHTML: boolean }) {
 	return props.inline ? (
 		<pre
 			className={
-				"inline border border-solid border-gray-400 bg-gray-100 dark:border-gray-600 dark:bg-[#3d434d] rounded-md px-1 " +
+				"inline border border-solid bg-gray-100 border-midGray dark:bg-[#3d434d] rounded-md px-1 " +
 				IosevkaFont.className
 			}
 			dangerouslySetInnerHTML={
@@ -30,7 +30,7 @@ export function CodeBlock(props: CodeProps & { allowHTML: boolean }) {
 	) : (
 		<div className={"my-4 flex flex-col " + IosevkaFont.className}>
 			<div
-				className="text-left block overflow-x-auto border-gray-400 bg-[#dce7f9] dark:border-styleGray dark:bg-[#2f383e] p-3 rounded-t-lg rounded-br-lg border-2 border-solid transition-colors"
+				className="text-left block overflow-x-auto bg-[#dce7f9] border-midGray dark:bg-[#2f383e] p-3 rounded-t-lg rounded-br-lg border-2 transition-colors"
 				dangerouslySetInnerHTML={
 					props.allowHTML
 						? { __html: props.children.toString() }
