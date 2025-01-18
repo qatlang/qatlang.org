@@ -1179,276 +1179,267 @@ export default function Page(props: { files: DocPage[]; versions: string[] }) {
 	}, []);
 
 	return (
-		<div className="flex flex-col w-[100%] h-[85vh]">
+		<div className="flex flex-col w-full h-full self-center">
 			<title>Docs | QAT Programming Language</title>
-			<div className="flex flex-col self-center pt-5 h-full w-full">
-				{unknownPath && (
-					<div className="flex flex-row bg-orange-400 text-black px-4 py-2 rounded-lg w-fit">
-						Could not find the path{" "}
-						<p className="font-bold px-2">{unknownPath}</p> in the
-						documentation. You have been redirected
-					</div>
-				)}
-				<div className="flex flex-col md:flex-row h-full">
-					<div className="md:flex md:flex-col h-full min-w-[15rem] w-[15rem] overflow-y-auto hidden px-4 border-solid border-r-[0.1rem] border-r-lightGray dark:border-r-darkGray">
-						{props.versions.length > 0 && (
-							<DropdownString
-								name="Version"
-								items={props.versions.map((val) => {
-									return { name: val, value: val };
-								})}
-								nonePrompt="initial"
-								default={activeVersion}
-								onChange={(val: string | null) => {
-									setActiveVersion(val);
+			{unknownPath && (
+				<div className="flex flex-row bg-orange-400 text-black px-4 py-2 rounded-lg w-fit">
+					Could not find the path{" "}
+					<p className="font-bold px-2">{unknownPath}</p> in the
+					documentation. You have been redirected
+				</div>
+			)}
+			<div className="flex flex-col md:flex-row h-full">
+				<div className="md:flex md:flex-col h-full min-w-[15rem] w-[15rem] overflow-y-auto hidden px-4 border-solid border-r-[0.1rem] border-r-lightGray dark:border-r-darkGray">
+					{props.versions.length > 0 && (
+						<DropdownString
+							name="Version"
+							items={props.versions.map((val) => {
+								return { name: val, value: val };
+							})}
+							nonePrompt="initial"
+							default={activeVersion}
+							onChange={(val: string | null) => {
+								setActiveVersion(val);
+							}}
+						/>
+					)}
+					<div className="mb-2" />
+					{props.files.flatMap((it) => {
+						return (
+							<MenuItem
+								onClick={(item: DocPage) => {
+									setActivePage(item);
+									router.push({ pathname: item.fullPath }, undefined, {
+										shallow: true,
+									});
 								}}
+								isActiveFn={isActivePage}
+								item={it}
 							/>
-						)}
-						<div className="mb-2" />
-						{props.files.flatMap((it) => {
-							return (
-								<MenuItem
-									onClick={(item: DocPage) => {
-										setActivePage(item);
+						);
+					})}
+				</div>
+				<div className="flex flex-col w-full">
+					<div className="flex flex-row w-full px-4 mb-5">
+						<input
+							className="pl-4 pr-12 py-2 border-2 border-solid border-midGray bg-white dark:bg-black text-xl rounded-xl w-full md:w-[50%]"
+							placeholder="Search in docs..."
+							type="text"
+							value={searchCandidate}
+							onFocus={() => {
+								if (searchCandidate.length > 0) {
+									setSearchVisible(true);
+								}
+							}}
+							onInput={async (ev: any) => {
+								setSearchCandidate(ev.target.value as string);
+								if (searchOngoing) {
+									searchShouldCancel = true;
+								}
+								while (searchOngoing) {}
+								searchShouldCancel = false;
+								if ((ev.target.value as string).length > 0) {
+									setSearchVisible(true);
+									searchOngoing = true;
+									const pageRes = searchInPages(
+										props.files,
+										ev.target.value,
+									);
+									if (searchShouldCancel) {
+										searchOngoing = false;
+										return;
+									}
+									setSearchResults(pageRes);
+									searchOngoing = false;
+								} else {
+									setSearchVisible(false);
+								}
+							}}
+						/>
+						<div
+							className="flex flex-col transition-all hover:rotate-180 active:rotate-[-360deg] mr-8 w-8 h-8 -ml-11 self-center cursor-pointer"
+							onClick={() => {
+								resetSearch(true);
+							}}
+						>
+							<CloseButton />
+						</div>
+						<div className="flex flex-row fixed md:relative w-full md:flex-grow bottom-3 md:bottom-0 left-0 px-3 md:px-0">
+							{activePage && activePage.previous && (
+								<ChangePage
+									onClick={() => {
+										resetSearch(false);
+										const pageRes = findPageAtSlug(
+											props.files,
+											activePage!
+												.previous!.path.split("/")
+												.toSpliced(0, 2),
+											activeVersion,
+										);
 										router.push(
-											{ pathname: item.fullPath },
+											{ pathname: activePage!.previous!.path },
 											undefined,
 											{ shallow: true },
 										);
+										setActivePage(pageRes.page!);
 									}}
-									isActiveFn={isActivePage}
-									item={it}
+									type="Previous"
+									name={activePage!.previous!.title}
 								/>
-							);
-						})}
-					</div>
-					<div className="flex flex-col w-full">
-						<div className="flex flex-row w-full px-4 mb-5">
-							<input
-								className="pl-4 pr-12 py-2 border-2 border-solid border-midGray bg-white dark:bg-black text-xl rounded-xl w-full md:w-[50%]"
-								placeholder="Search in docs..."
-								type="text"
-								value={searchCandidate}
-								onFocus={() => {
-									if (searchCandidate.length > 0) {
-										setSearchVisible(true);
-									}
-								}}
-								onInput={async (ev: any) => {
-									setSearchCandidate(ev.target.value as string);
-									if (searchOngoing) {
-										searchShouldCancel = true;
-									}
-									while (searchOngoing) {}
-									searchShouldCancel = false;
-									if ((ev.target.value as string).length > 0) {
-										setSearchVisible(true);
-										searchOngoing = true;
-										const pageRes = searchInPages(
+							)}
+							<div className="flex-grow"></div>
+							{activePage && activePage.next && (
+								<ChangePage
+									onClick={() => {
+										resetSearch(false);
+										const pageRes = findPageAtSlug(
 											props.files,
-											ev.target.value,
+											activePage!
+												.next!.path.split("/")
+												.toSpliced(0, 2),
+											activeVersion,
 										);
-										if (searchShouldCancel) {
-											searchOngoing = false;
-											return;
-										}
-										setSearchResults(pageRes);
-										searchOngoing = false;
-									} else {
-										setSearchVisible(false);
-									}
-								}}
-							/>
-							<div
-								className="flex flex-col transition-all hover:rotate-180 active:rotate-[-360deg] mr-8 w-8 h-8 -ml-11 self-center cursor-pointer"
-								onClick={() => {
-									resetSearch(true);
-								}}
-							>
-								<CloseButton />
-							</div>
-							<div className="flex flex-row fixed md:relative w-full md:flex-grow bottom-3 md:bottom-0 left-0 px-3 md:px-0">
-								{activePage && activePage.previous && (
-									<ChangePage
-										onClick={() => {
-											resetSearch(false);
-											const pageRes = findPageAtSlug(
-												props.files,
-												activePage!
-													.previous!.path.split("/")
-													.toSpliced(0, 2),
-												activeVersion,
-											);
-											router.push(
-												{ pathname: activePage!.previous!.path },
-												undefined,
-												{ shallow: true },
-											);
-											setActivePage(pageRes.page!);
-										}}
-										type="Previous"
-										name={activePage!.previous!.title}
-									/>
-								)}
-								<div className="flex-grow"></div>
-								{activePage && activePage.next && (
-									<ChangePage
-										onClick={() => {
-											resetSearch(false);
-											const pageRes = findPageAtSlug(
-												props.files,
-												activePage!
-													.next!.path.split("/")
-													.toSpliced(0, 2),
-												activeVersion,
-											);
-											router.push(
-												{
-													pathname: pageRes.page!.fullPath,
-													query: activeVersion
-														? "version=" + activeVersion
-														: null,
-												},
-												undefined,
-												{ shallow: true },
-											);
-											setActivePage(pageRes.page!);
-										}}
-										type="Next"
-										name={activePage!.next!.title}
-									/>
-								)}
-							</div>
-						</div>
-						<div className="flex flex-col flex-grow px-4 overflow-y-auto">
-							{searchVisible ? (
-								searchResults.length > 0 ? (
-									<div className="flex flex-col w-full pb-20">
-										<p className="text-left pl-4">
-											{searchResults.length.toString()}{" "}
-											{searchResults.length === 1
-												? "page "
-												: "pages "}
-											found
-										</p>
-										{searchResults.flatMap((it) => {
-											return (
-												<SearchResultCard
-													value={it}
-													setPage={(
-														pagePath: string,
-														version: string | null,
-													) => {
-														setActivePage(
-															findPageAtSlug(
-																props.files,
-																pagePath
-																	.split("/")
-																	.toSpliced(0, 2),
-																activeVersion,
-															).page!,
-														);
-														setActiveVersion(version);
-														setSearchVisible(false);
-													}}
-												/>
-											);
-										})}
-									</div>
-								) : (
-									<div className="text-2xl text-center mt-5">
-										Could not find anything
-										<p>...</p>
-									</div>
-								)
-							) : (
-								<>
-									<div className="text-4xl font-bold text-left mb-6">
-										{versionedPage.title}
-									</div>
-									{versionedPage.fallbackVersion && (
-										<div className="px-3 py-1 mb-4 italic bg-[#cccccc] dark:bg-[#444444] rounded-lg w-fit">
-											Since {versionedPage.fallbackVersion} version
-										</div>
-									)}
-									{typeof versionedPage.content === "string" ? (
-										<Markdown
-											allowHTML
-											className="text-lg mb-32"
-											children={versionedPage.content as string}
-											currentURL={activePage.fullPath}
-										/>
-									) : (
-										(() => {
-											const group =
-												versionedPage.content as DocPageGroup;
-											return (
-												<div className="flex flex-col mb-32">
-													{group.content.length > 0 && (
-														<Markdown
-															allowHTML
-															className="text-lg mb-2"
-															children={group.content}
-															currentURL={activePage.fullPath}
-														/>
-													)}
-													<div className="grid grid-cols-4 gap-4">
-														{group.pages.flatMap((d) => {
-															return (
-																<div
-																	className="hover:text-white hover:dark:text-white cursor-pointer rounded-lg px-4 pt-1 pb-2 my-2 border-2 border-solid border-midGray hover:bg-styleGreen hover:border-[#128f5f] text-left"
-																	onClick={() => {
-																		const newPage =
-																			findPageAtSlug(
-																				props.files,
-																				d.fullPath
-																					.split("/")
-																					.toSpliced(0, 2),
-																				activeVersion,
-																			);
-																		if (
-																			newPage.page !== null
-																		) {
-																			setActivePage(
-																				newPage.page,
-																			);
-																			router.push(
-																				{
-																					pathname:
-																						d.fullPath,
-																					query:
-																						activeVersion !==
-																						null
-																							? "version=" +
-																								activeVersion
-																							: undefined,
-																				},
-																				undefined,
-																				{ shallow: true },
-																			);
-																		}
-																	}}
-																>
-																	<p className="text-lg font-bold">
-																		{d.title}
-																	</p>
-																	{d.description.length >
-																		0 && (
-																		<p className="text-sm">
-																			{d.description}
-																		</p>
-																	)}
-																</div>
-															);
-														})}
-													</div>
-												</div>
-											);
-										})()
-									)}
-								</>
+										router.push(
+											{
+												pathname: pageRes.page!.fullPath,
+												query: activeVersion
+													? "version=" + activeVersion
+													: null,
+											},
+											undefined,
+											{ shallow: true },
+										);
+										setActivePage(pageRes.page!);
+									}}
+									type="Next"
+									name={activePage!.next!.title}
+								/>
 							)}
 						</div>
+					</div>
+					<div className="flex flex-col flex-grow px-4 overflow-y-auto">
+						{searchVisible ? (
+							searchResults.length > 0 ? (
+								<div className="flex flex-col w-full pb-20">
+									<p className="text-left pl-4">
+										{searchResults.length.toString()}{" "}
+										{searchResults.length === 1 ? "page " : "pages "}
+										found
+									</p>
+									{searchResults.flatMap((it) => {
+										return (
+											<SearchResultCard
+												value={it}
+												setPage={(
+													pagePath: string,
+													version: string | null,
+												) => {
+													setActivePage(
+														findPageAtSlug(
+															props.files,
+															pagePath
+																.split("/")
+																.toSpliced(0, 2),
+															activeVersion,
+														).page!,
+													);
+													setActiveVersion(version);
+													setSearchVisible(false);
+												}}
+											/>
+										);
+									})}
+								</div>
+							) : (
+								<div className="text-2xl text-center mt-5">
+									Could not find anything
+									<p>...</p>
+								</div>
+							)
+						) : (
+							<>
+								<div className="text-4xl font-bold text-left mb-6">
+									{versionedPage.title}
+								</div>
+								{versionedPage.fallbackVersion && (
+									<div className="px-3 py-1 mb-4 italic bg-[#cccccc] dark:bg-[#444444] rounded-lg w-fit">
+										Since {versionedPage.fallbackVersion} version
+									</div>
+								)}
+								{typeof versionedPage.content === "string" ? (
+									<Markdown
+										allowHTML
+										className="text-lg"
+										children={versionedPage.content as string}
+										currentURL={activePage.fullPath}
+									/>
+								) : (
+									(() => {
+										const group =
+											versionedPage.content as DocPageGroup;
+										return (
+											<div className="flex flex-col">
+												{group.content.length > 0 && (
+													<Markdown
+														allowHTML
+														className="text-lg mb-2"
+														children={group.content}
+														currentURL={activePage.fullPath}
+													/>
+												)}
+												<div className="grid grid-cols-4 gap-4">
+													{group.pages.flatMap((d) => {
+														return (
+															<div
+																className="hover:text-white hover:dark:text-white cursor-pointer rounded-lg px-4 pt-1 pb-2 my-2 border-2 border-solid border-midGray hover:bg-styleGreen hover:border-[#128f5f] text-left"
+																onClick={() => {
+																	const newPage =
+																		findPageAtSlug(
+																			props.files,
+																			d.fullPath
+																				.split("/")
+																				.toSpliced(0, 2),
+																			activeVersion,
+																		);
+																	if (newPage.page !== null) {
+																		setActivePage(
+																			newPage.page,
+																		);
+																		router.push(
+																			{
+																				pathname:
+																					d.fullPath,
+																				query:
+																					activeVersion !==
+																					null
+																						? "version=" +
+																							activeVersion
+																						: undefined,
+																			},
+																			undefined,
+																			{ shallow: true },
+																		);
+																	}
+																}}
+															>
+																<p className="text-lg font-bold">
+																	{d.title}
+																</p>
+																{d.description.length > 0 && (
+																	<p className="text-sm">
+																		{d.description}
+																	</p>
+																)}
+															</div>
+														);
+													})}
+												</div>
+											</div>
+										);
+									})()
+								)}
+							</>
+						)}
 					</div>
 				</div>
 			</div>

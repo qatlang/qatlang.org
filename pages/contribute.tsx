@@ -517,7 +517,7 @@ function SocialIcon(props: {
 			className="mx-3"
 			href={props.link}
 			target="_blank"
-			dataAction={props.action}
+			{...{ "data-action": props.action }}
 		>
 			<div className="hover:text-blue-500">
 				<div className="h-14">{props.children}</div>

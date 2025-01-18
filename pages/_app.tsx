@@ -1,8 +1,10 @@
+"use client";
+
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { ThemeProvider, useTheme } from "../utils/darkMode";
 
 function QatIcon() {
@@ -403,6 +405,13 @@ function MainPage({ Component, router, pageProps }: AppProps) {
 	];
 	const [isDark, _] = useTheme()!;
 	let [isSmallMenuExpanded, setSmallMenuExpand] = useState<boolean>(false);
+	const headerRef = useRef<any>(null);
+	const [headerHeight, setHeaderHeight] = useState<number>(10);
+	useLayoutEffect(() => {
+		if (headerRef) {
+			setHeaderHeight(headerRef.current.clientHeight);
+		}
+	}, []);
 	return (
 		<div
 			className="text-center text-black dark:text-[#cccccc] flex flex-col flex-grow"
@@ -425,7 +434,10 @@ function MainPage({ Component, router, pageProps }: AppProps) {
 				property="og:image"
 				content="https://raw.githubusercontent.com/qatlang/media/main/images/qat_cover_1200x671.png"
 			/>
-			<header className="max-h-[10vh] py-10 flex flex-row items-center justify-between">
+			<header
+				ref={headerRef}
+				className="h-fit py-5 flex flex-row items-center justify-between"
+			>
 				<Link href="/">
 					<div className="flex flex-row align-middle">
 						<QatIcon />
@@ -477,14 +489,20 @@ function MainPage({ Component, router, pageProps }: AppProps) {
 					<NavBar />
 				</div>
 			</header>
-			<Component {...pageProps} />
+			<div
+				style={{
+					height: "calc(100vh - " + headerHeight.toString() + "px)",
+				}}
+			>
+				<Component {...pageProps} />
+			</div>
 		</div>
 	);
 }
 
 export default function App({ Component, router, pageProps }: AppProps) {
 	return (
-		<div className="flex flex-col min-h-[100vh] w-[100%]">
+		<div className="flex flex-col h-[100vh] w-[100%]">
 			<ThemeProvider>
 				<MainPage
 					Component={Component}
