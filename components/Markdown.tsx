@@ -131,7 +131,7 @@ export function Markdown(props: {
 					}
 					return (
 						<a
-							className="group inline px-2 py-1 bg-[#0055ff33] hover:bg-[#0055ff55] underline text-[#0055ff] hover:text-[#0000ff] dark:hover:text-[#0099ff] rounded-lg"
+							className="group inline px-2 py-1 bg-[#0066ff33] hover:bg-[#0066ff55] underline text-[#0066ff] hover:text-[#0000ff] dark:hover:text-[#0099ff] rounded-lg"
 							{...{
 								...value,
 								href: usableHREF,
@@ -142,7 +142,7 @@ export function Markdown(props: {
 						>
 							{isInsideLink && (
 								<svg
-									className="inline h-5 w-5 mr-1 stroke-[#0055ff] group-hover:stroke-[#0000ff] dark:group-hover:stroke-[#0099ff]"
+									className="inline h-5 w-5 mr-1 stroke-[#0066ff] group-hover:stroke-[#0000ff] dark:group-hover:stroke-[#0099ff]"
 									viewBox="0 0 24 24"
 									fill="none"
 									xmlns="http://www.w3.org/2000/svg"
@@ -157,7 +157,7 @@ export function Markdown(props: {
 							{value.children}
 							{!isInsideLink && (
 								<svg
-									className="inline h-5 w-5 ml-1 stroke-[#0055ff] group-hover:stroke-[#0000ff] dark:group-hover:stroke-[#0099ff]"
+									className="inline h-5 w-5 ml-1 stroke-[#0066ff] group-hover:stroke-[#0000ff] dark:group-hover:stroke-[#0099ff]"
 									viewBox="0 0 24 24"
 									fill="none"
 									xmlns="http://www.w3.org/2000/svg"
