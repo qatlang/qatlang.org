@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { CodeProps } from "react-markdown/lib/ast-to-react";
 import "react-toastify/dist/ReactToastify.css";
@@ -93,13 +93,42 @@ export function Markdown(props: {
 		<ReactMarkdown
 			className={props.className + " text-black dark:text-white text-left"}
 			components={{
-				ul: (value) => <ul className="my-2">{value.children}</ul>,
-				li: (value) => <li className="my-2">• {value.children}</li>,
-				p: (value) => (
-					<p className="my-3" {...value}>
-						{value.children}
-					</p>
-				),
+				ul: (value) => <ul className="my-2" {...value} />,
+				li: (value) => {
+					const hasBlankCheckbox =
+						(value.children as any[]).length > 0 &&
+						typeof (value.children as any[])[0] === "string" &&
+						(value.children as any[])[0].startsWith("[ ] ");
+					const hasTickedCheckbox =
+						(value.children as any[]).length > 0 &&
+						typeof (value.children as any[])[0] === "string" &&
+						(value.children as any[])[0].toLowerCase().startsWith("[x] ");
+					return (
+						<li className="my-2 flex flex-row" {...value}>
+							<p className="mr-2">
+								{value.ordered
+									? (value.index + 1).toString() + "."
+									: "•"}
+							</p>{" "}
+							{(hasBlankCheckbox || hasTickedCheckbox) && (
+								<input
+									className="mr-2"
+									type="checkbox"
+									checked={hasTickedCheckbox}
+								/>
+							)}
+							{hasBlankCheckbox || hasTickedCheckbox
+								? [
+										(value.children as string[])[0].substring(4),
+										...value.children.toSpliced(0, 1),
+									]
+								: value.children}
+						</li>
+					);
+				},
+				p: (value) => {
+					return <p className="mb-3" {...value} />;
+				},
 				code: (value) => (
 					<CodeBlock {...value} allowHTML={props.allowHTML ?? false} />
 				),
