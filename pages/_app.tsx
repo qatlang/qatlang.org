@@ -159,8 +159,8 @@ function NavItem(props: {
 		<Link
 			className={
 				props.isActive
-					? "mx-2 h-fit text-[1.2rem] bg-black dark:bg-white text-white dark:text-black font-mono font-bold tracking-wider p-[0.35rem] rounded-xl transition-all"
-					: "mx-2 text-[1.2rem] bg-transparent text-styleGreen hover:text-black dark:hover:text-white font-mono font-bold tracking-wider p-[0.35rem] rounded-xl transition-all"
+					? "mx-1 h-fit text-[1.2rem] bg-black dark:bg-white text-white dark:text-black font-mono font-bold py-1 px-2 rounded-lg transition-all"
+					: "mx-1 text-[1.2rem] bg-transparent text-styleGreen hover:text-black dark:hover:text-white font-mono font-bold py-1 px-2 rounded-lg transition-all"
 			}
 			target={props.openInNewTab ? "_blank" : undefined}
 			href={props.link}
@@ -180,7 +180,7 @@ function NavBar() {
 		const ModeButton = (props: { mode: string }) => {
 			return (
 				<div
-					className="my-2 transition-colors rounded-lg px-3 py-1 border-2 border-midGray hover:border-black dark:hover:border-white hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black cursor-pointer uppercase font-mono font-bold"
+					className="transition-colors px-6 py-1 hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black cursor-pointer uppercase font-mono font-bold text-right"
 					style={{
 						borderColor:
 							darkModeValue === props.mode ? "#128f5f" : undefined,
@@ -198,34 +198,38 @@ function NavBar() {
 		};
 
 		return (
-			<div className="transition-colors relative group mx-4 p-2 w-12 h-12 border-2 border-solid rounded-xl border-midGray bg-white hover:bg-black dark:bg-black dark:hover:bg-white">
-				<div className="z-50 shadow-lg rounded-lg invisible absolute top-10 right-0 group-hover:visible py-2 px-4 text-lg bg-white dark:bg-black">
+			<div className="transition-colors relative group mx-4 p-2 w-12 h-12 border-2 border-solid rounded-xl border-midGray hover:border-transparent bg-white hover:bg-black dark:bg-black dark:hover:bg-white">
+				<div className="z-[100] rounded-lg invisible absolute top-[2.9rem] right-0 py-2 group-hover:visible bg-white dark:bg-[#333333] border-2 border-solid border-midGray shadow-xl">
 					<ModeButton mode="dark" />
 					<ModeButton mode="light" />
 					<ModeButton mode="system" />
 				</div>
 				{darkModeValue === "dark" ? (
 					<svg
-						className="icon"
+						className="h-full w-full transition-all group-hover:rotate-[360deg]"
 						viewBox="0 0 24 24"
 						fill="none"
 						// xmlns="http://www.w3.org/2000/svg"
 					>
 						<path
 							d="M19.9001 2.30719C19.7392 1.8976 19.1616 1.8976 19.0007 2.30719L18.5703 3.40247C18.5212 3.52752 18.4226 3.62651 18.298 3.67583L17.2067 4.1078C16.7986 4.26934 16.7986 4.849 17.2067 5.01054L18.298 5.44252C18.4226 5.49184 18.5212 5.59082 18.5703 5.71587L19.0007 6.81115C19.1616 7.22074 19.7392 7.22074 19.9001 6.81116L20.3305 5.71587C20.3796 5.59082 20.4782 5.49184 20.6028 5.44252L21.6941 5.01054C22.1022 4.849 22.1022 4.26934 21.6941 4.1078L20.6028 3.67583C20.4782 3.62651 20.3796 3.52752 20.3305 3.40247L19.9001 2.30719Z"
-							fill="#ffcf54"
+							fill="#ffad44"
 						/>
 						<path
 							d="M16.0328 8.12967C15.8718 7.72009 15.2943 7.72009 15.1333 8.12967L14.9764 8.52902C14.9273 8.65407 14.8287 8.75305 14.7041 8.80237L14.3062 8.95987C13.8981 9.12141 13.8981 9.70107 14.3062 9.86261L14.7041 10.0201C14.8287 10.0694 14.9273 10.1684 14.9764 10.2935L15.1333 10.6928C15.2943 11.1024 15.8718 11.1024 16.0328 10.6928L16.1897 10.2935C16.2388 10.1684 16.3374 10.0694 16.462 10.0201L16.8599 9.86261C17.268 9.70107 17.268 9.12141 16.8599 8.95987L16.462 8.80237C16.3374 8.75305 16.2388 8.65407 16.1897 8.52902L16.0328 8.12967Z"
-							fill="#ffcf54"
+							fill="#ffad54"
 						/>
 						<path
 							d="M12 22C17.5228 22 22 17.5228 22 12C22 11.5373 21.3065 11.4608 21.0672 11.8568C19.9289 13.7406 17.8615 15 15.5 15C11.9101 15 9 12.0899 9 8.5C9 6.13845 10.2594 4.07105 12.1432 2.93276C12.5392 2.69347 12.4627 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-							fill="#659bff"
+							fill="#658aff"
 						/>
 					</svg>
 				) : darkModeValue === "system" ? (
-					<svg className="icon" viewBox="0 0 1024 1024" version="1.1">
+					<svg
+						className="h-full w-full transition-all group-hover:rotate-[360deg]"
+						viewBox="0 0 1024 1024"
+						version="1.1"
+					>
 						<path
 							d="M516.472 946.04c-35.688 0.32-64.872-28.4-65.16-64.088l-1.104-136.856a64.64 64.64 0 0 1 64.12-65.136c35.672-0.28 64.832 28.408 65.144 64.128l1.08 136.824c0.304 35.688-28.408 64.88-64.08 65.128z"
 							fill="#E5226B"
@@ -245,8 +249,7 @@ function NavBar() {
 					</svg>
 				) : (
 					<svg
-						width="100%"
-						height="100%"
+						className="h-full w-full transition-all group-hover:rotate-[360deg]"
 						viewBox="-4 0 32 32"
 						fill="none"
 						version="1.1"
@@ -255,7 +258,7 @@ function NavBar() {
 					>
 						<path
 							d="M13.0912 30.5454C13.0912 29.742 12.44 29.0908 11.6367 29.0908C10.8334 29.0908 10.1821 29.742 10.1821 30.5454C10.1821 31.3487 10.8334 31.9999 11.6367 31.9999C12.44 31.9999 13.0912 31.3487 13.0912 30.5454Z"
-							fill="#000000"
+							fill="#777777"
 							id="path3897"
 						/>
 						<path
@@ -268,12 +271,12 @@ function NavBar() {
 						/>
 						<path
 							d="M7.27246 27.6364C7.27246 29.2431 8.57491 30.5455 10.1816 30.5455H13.0906C14.6973 30.5455 15.9997 29.2431 15.9997 27.6364V26.1819H7.27246V27.6364Z"
-							fill="url(#paint1_radial_103_1531)"
+							fill="#7799ff"
 							id="path3901"
 						/>
 						<path
 							d="M13.8184 27.6364H9.45481C9.05315 27.6364 8.72754 27.962 8.72754 28.3636C8.72754 28.7653 9.05315 29.0909 9.45481 29.0909H13.8184C14.2201 29.0909 14.5457 28.7653 14.5457 28.3636C14.5457 27.962 14.2201 27.6364 13.8184 27.6364Z"
-							fill="#000000"
+							fill="black"
 							fill-opacity="0.2"
 							id="path3903"
 						/>
@@ -357,17 +360,16 @@ function NavBar() {
 	}, [darkModeValue]);
 	return (
 		<>
-			<nav className="hidden md:flex md:flex-row">
-				<NavItem name="HOME" link="/" isActive={router.asPath === "/"} />
+			<nav className="hidden md:flex md:flex-row items-center">
 				<NavItem
 					name="DOWNLOADS"
 					link="/downloads"
 					isActive={router.asPath.includes("/downloads")}
 				/>
 				<NavItem
-					name="DOCS"
+					name="LEARN"
 					link="/docs"
-					isActive={router.asPath.includes("/docs")}
+					isActive={router.asPath.startsWith("/docs")}
 				/>
 				<NavItem
 					name="PLAYGROUND"
@@ -388,23 +390,15 @@ function NavBar() {
 		</>
 	);
 }
-// <NavItem
-//   name="DOCS"
-//   link="https://docs.qat.dev"
-//   openInNewTab={true}
-//   isActive={false}
-// />
+
 function MainPage({ Component, router, pageProps }: AppProps) {
 	const navPaths = [
-		{ name: "HOME", route: "/", out: false },
 		{ name: "DOWNLOADS", route: "/downloads", out: false },
-		{ name: "DOCS", route: "/docs", out: false },
+		{ name: "LEARN", route: "/docs", out: false },
 		{ name: "PLAYGROUND", route: "/playground", out: false },
 		{ name: "STORY", route: "/story", out: false },
-		// { name: "DOCS", route: "https://docs.qat.dev", out: true },
 	];
 	const [isDark, _] = useTheme()!;
-	let [isSmallMenuExpanded, setSmallMenuExpand] = useState<boolean>(false);
 	const headerRef = useRef<any>(null);
 	const [headerHeight, setHeaderHeight] = useState<number>(10);
 	useLayoutEffect(() => {
@@ -445,46 +439,55 @@ function MainPage({ Component, router, pageProps }: AppProps) {
 					</div>
 				</Link>
 				<div className="flex flex-row">
-					<div
-						className="visible md:hidden relative"
-						onClick={() => {
-							setSmallMenuExpand(!isSmallMenuExpanded);
-						}}
-					>
-						<svg
-							className="self-center h-12 w-12 fill-styleGreen transition-all"
-							viewBox="0 0 24 24"
-							style={{
-								rotate: isSmallMenuExpanded ? "135deg" : "0deg",
-								fill: isSmallMenuExpanded ? "#128f5f" : undefined,
-							}}
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM16 12.75H12.75V16C12.75 16.41 12.41 16.75 12 16.75C11.59 16.75 11.25 16.41 11.25 16V12.75H8C7.59 12.75 7.25 12.41 7.25 12C7.25 11.59 7.59 11.25 8 11.25H11.25V8C11.25 7.59 11.59 7.25 12 7.25C12.41 7.25 12.75 7.59 12.75 8V11.25H16C16.41 11.25 16.75 11.59 16.75 12C16.75 12.41 16.41 12.75 16 12.75Z" />
-						</svg>
-						{isSmallMenuExpanded && (
-							<div className="flex flex-col z-[100] absolute rounded-lg bg-white dark:bg-[#333333] w-fit py-1 px-3 right-7 top-9">
-								{navPaths.flatMap((navItem) => {
-									return (
-										<Link
-											href={navItem.route}
-											target={navItem.out ? "_blank" : undefined}
-											className="my-2 rounded-lg font-mono text-base py-2 px-6 tracking-wider"
-											style={{
-												backgroundColor:
-													router.asPath === navItem.route
-														? "#128f5f"
-														: isDark
-															? "black"
-															: "white",
-											}}
-										>
-											{navItem.name}
-										</Link>
-									);
-								})}
-							</div>
-						)}
+					<div className="group visible md:hidden relative cursor-pointer">
+						<div className="self-center h-12 w-12 rounded-xl bg-white dark:bg-black group-hover:bg-styleGreen border-2 border-solid border-midGray group-hover:border-transparent transition-colors">
+							<svg
+								className="w-full h-full transition-all group-hover:rotate-90"
+								viewBox="0 0 24 24"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									className="group-hover:stroke-white group-hover:dark:stroke-[#333333] stroke-styleGreen transition-colors"
+									d="M6 12H18M12 6V18"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								/>
+							</svg>
+							{false && (
+								<svg
+									className="h-full w-full transition-all group-hover:rotate-180"
+									viewBox="0 0 24 24"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM16 12.75H12.75V16C12.75 16.41 12.41 16.75 12 16.75C11.59 16.75 11.25 16.41 11.25 16V12.75H8C7.59 12.75 7.25 12.41 7.25 12C7.25 11.59 7.59 11.25 8 11.25H11.25V8C11.25 7.59 11.59 7.25 12 7.25C12.41 7.25 12.75 7.59 12.75 8V11.25H16C16.41 11.25 16.75 11.59 16.75 12C16.75 12.41 16.41 12.75 16 12.75Z" />
+								</svg>
+							)}
+						</div>
+						<div className="hidden group-hover:flex group-hover:flex-col z-[100] absolute rounded-xl border-2 border-solid border-midGray bg-white dark:bg-[#333333] w-fit py-2 right-0 top-12 shadow-xl">
+							{navPaths.flatMap((navItem) => {
+								return (
+									<Link
+										href={navItem.route}
+										target={navItem.out ? "_blank" : undefined}
+										className="font-mono font-bold text-right text-base py-1 px-6 hover:bg-black hover:text-white hover:dark:bg-white hover:dark:text-black"
+										style={{
+											backgroundColor: router.asPath.startsWith(
+												navItem.route,
+											)
+												? "#128f5f"
+												: undefined,
+											color: router.asPath.startsWith(navItem.route)
+												? "white"
+												: undefined,
+										}}
+									>
+										{navItem.name}
+									</Link>
+								);
+							})}
+						</div>
 					</div>
 					<NavBar />
 				</div>

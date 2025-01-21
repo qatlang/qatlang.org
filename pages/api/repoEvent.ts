@@ -5,7 +5,6 @@ import {
 	ICommit,
 } from "../../models/interfaces";
 import * as crypto from "crypto";
-import { Env } from "../../models/env";
 import pb, { Tables } from "../../models/pb";
 
 export default async function RepoEventHandler(
@@ -15,7 +14,7 @@ export default async function RepoEventHandler(
 	if (req.method !== "POST") {
 		return resp.status(404).send({});
 	}
-	if (req.headers["x-gitlab-token"] === Env.gitlabEventSecret()) {
+	if (req.headers["x-gitlab-token"] === process.env["GITLAB_EVENT_SECRET"]!) {
 		if (req.headers["x-gitlab-event"] === "Push Hook") {
 			if (req.headers["content-type"] !== "application/json") {
 				console.error("Incorrect content type for request");
@@ -32,7 +31,10 @@ export default async function RepoEventHandler(
 		}
 	} else if (req.headers["x-github-event"] === "push") {
 		if ((req.headers["x-hub-signature-256"] ?? "").includes("sha256=")) {
-			let hmac = crypto.createHmac("sha256", Env.githubEventSecret());
+			let hmac = crypto.createHmac(
+				"sha256",
+				process.env["GITHUB_EVENT_SECRET"]!,
+			);
 			const digest = hmac.update(JSON.stringify(req.body)).digest("hex");
 			if (
 				digest ===

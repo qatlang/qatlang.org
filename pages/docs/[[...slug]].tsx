@@ -1369,7 +1369,7 @@ export default function Page(props: { files: DocPage[]; versions: string[] }) {
 								{typeof versionedPage.content === "string" ? (
 									<Markdown
 										allowHTML
-										className="text-lg"
+										className="text-lg mb-28 md:mb-4"
 										children={versionedPage.content as string}
 										currentURL={activePage.fullPath}
 									/>
@@ -1378,7 +1378,7 @@ export default function Page(props: { files: DocPage[]; versions: string[] }) {
 										const group =
 											versionedPage.content as DocPageGroup;
 										return (
-											<div className="flex flex-col">
+											<div className="flex flex-col mb-28 md:mb-4">
 												{group.content.length > 0 && (
 													<Markdown
 														allowHTML
@@ -1387,11 +1387,11 @@ export default function Page(props: { files: DocPage[]; versions: string[] }) {
 														currentURL={activePage.fullPath}
 													/>
 												)}
-												<div className="grid grid-cols-4 gap-4">
+												<div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
 													{group.pages.flatMap((d) => {
 														return (
 															<div
-																className="hover:text-white hover:dark:text-white cursor-pointer rounded-lg px-4 pt-1 pb-2 my-2 border-2 border-solid border-midGray hover:bg-styleGreen hover:border-[#128f5f] text-left"
+																className="hover:text-white hover:dark:text-white cursor-pointer rounded-lg px-4 pt-1 pb-2 my-2 border-2 border-solid border-midGray bg-white dark:bg-black hover:bg-styleGreen hover:dark:bg-styleGreen hover:border-[#128f5f] text-left"
 																onClick={() => {
 																	const newPage =
 																		findPageAtSlug(
@@ -1535,7 +1535,7 @@ function ChangePage(props: {
 	return (
 		<div
 			onClick={props.onClick}
-			className="bg-white dark:bg-black select-none border-2 active:bg-white active:border-white dark:active:bg-black dark:active:border-black hover:text-white hover:bg-styleGreen dark:hover:bg-styleGreen px-3 py-1 border-solid border-midGray hover:border-transparent hover:dark:border-transparent cursor-pointer rounded-xl flex flex-col md:w-[49%]"
+			className="bg-white dark:bg-black select-none border-2 active:bg-white active:border-white dark:active:bg-black dark:active:border-black hover:text-white hover:bg-styleGreen dark:hover:bg-styleGreen px-3 py-1 border-solid border-midGray hover:border-transparent hover:dark:border-transparent cursor-pointer rounded-xl flex flex-col md:w-[49%] z-0"
 			style={{
 				textAlign: props.type === "Previous" ? "left" : "right",
 			}}
