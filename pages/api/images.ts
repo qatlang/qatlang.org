@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import pb, { Tables } from "../../models/pb";
+import https from "https";
 import http from "http";
 import { Env } from "../../models/env";
 import { dataUrlToBlob } from "../../utils/dataUrlToBlob";
@@ -15,14 +16,14 @@ export default async function ImagesHandler(
 					.collection(Tables.images)
 					.getOne<{ file: string }>(req.query["id"] as string)
 			).file;
-			let url = pb.files.getUrl(
+			let url = pb.files.getURL(
 				{
 					collectionId: pb.collection(Tables.images).collectionIdOrName,
 					id: req.query["id"],
 				},
 				filename,
 			);
-			http
+			(url.startsWith("https://") ? https : http)
 				.get(url, (resp) => {
 					let chunks: any[] = [];
 					resp.on("data", (chunk) => {
@@ -34,7 +35,7 @@ export default async function ImagesHandler(
 				})
 				.on("error", (e) => {
 					console.log(e.message);
-					return res.status(500).send({});
+					return res.status(401).send({});
 				});
 		} else if (req.method === "POST") {
 			const body = JSON.parse(req.body) as {
@@ -49,7 +50,7 @@ export default async function ImagesHandler(
 				const imageRes = await pb.collection(Tables.images).create(form);
 				return res.status(200).json(imageRes);
 			} else {
-				return res.status(404).json({});
+				return res.status(401).json({});
 			}
 		} else if (req.method === "DELETE") {
 			const body = JSON.parse(req.body) as {
@@ -60,13 +61,13 @@ export default async function ImagesHandler(
 				const deleted = await pb.collection(Tables.images).delete(body.id);
 				return res.status(200).json({ deleted: deleted });
 			} else {
-				return res.status(404).json({});
+				return res.status(401).json({});
 			}
 		} else {
-			return res.status(500).json({});
+			return res.status(401).json({});
 		}
 	} catch (e) {
 		console.debug(e);
-		return res.status(500).json({});
+		return res.status(401).json({});
 	}
 }
