@@ -5,7 +5,6 @@ import { CodeProps } from "react-markdown/lib/ast-to-react";
 import "react-toastify/dist/ReactToastify.css";
 import localFont from "next/font/local";
 import rehypeRaw from "rehype-raw";
-import { useRouter } from "next/router";
 
 const IosevkaFont = localFont({
 	src: "../fonts/IosevkaNerdFont-Regular.ttf",
@@ -19,7 +18,7 @@ export function CodeBlock(props: CodeProps & { allowHTML: boolean }) {
 	return props.inline ? (
 		<pre
 			className={
-				"inline border border-solid bg-gray-100 border-midGray dark:bg-[#3d434d] rounded-md px-1 " +
+				"inline h-fit border border-solid bg-gray-100 border-midGray dark:bg-[#3d434d] rounded-md px-1 py-[0.13rem] mx-1 " +
 				IosevkaFont.className
 			}
 			dangerouslySetInnerHTML={
@@ -104,15 +103,22 @@ export function Markdown(props: {
 						typeof (value.children as any[])[0] === "string" &&
 						(value.children as any[])[0].toLowerCase().startsWith("[x] ");
 					return (
-						<li className="my-2 flex flex-row" {...value}>
-							<p className="mr-2">
+						<li
+							className={
+								hasBlankCheckbox || hasTickedCheckbox
+									? "my-2 flex flex-row"
+									: "my-2"
+							}
+							{...value}
+						>
+							<pre className="mr-2 inline">
 								{value.ordered
 									? (value.index + 1).toString() + "."
 									: "•"}
-							</p>{" "}
+							</pre>
 							{(hasBlankCheckbox || hasTickedCheckbox) && (
 								<input
-									className="mr-2"
+									className="mr-2 h-4 w-4 self-center"
 									type="checkbox"
 									checked={hasTickedCheckbox}
 								/>
@@ -127,7 +133,31 @@ export function Markdown(props: {
 					);
 				},
 				p: (value) => {
-					return <p className="mb-3" {...value} />;
+					const hasBlankCheckbox =
+						(value.children as any[]).length > 0 &&
+						typeof (value.children as any[])[0] === "string" &&
+						(value.children as any[])[0].startsWith("[ ] ");
+					const hasTickedCheckbox =
+						(value.children as any[]).length > 0 &&
+						typeof (value.children as any[])[0] === "string" &&
+						(value.children as any[])[0].toLowerCase().startsWith("[x] ");
+					return hasBlankCheckbox || hasTickedCheckbox ? (
+						<div className={"flex flex-row mb-3"} {...value}>
+							<input
+								className="mr-2 h-4 w-4 self-center"
+								type="checkbox"
+								checked={hasTickedCheckbox}
+							/>
+							<p className={""}>
+								{[
+									(value.children as string[])[0].substring(4),
+									...value.children.toSpliced(0, 1),
+								]}
+							</p>
+						</div>
+					) : (
+						<p className="mb-3" {...value}></p>
+					);
 				},
 				code: (value) => (
 					<CodeBlock {...value} allowHTML={props.allowHTML ?? false} />
