@@ -1,7 +1,13 @@
 import PocketBase from "pocketbase";
-import { Env } from "./env";
 
-const pb = new PocketBase(Env.pocketbaseURL())
+const pb = await (async () => {
+	const result = new PocketBase(process.env["POCKETBASE_URL"]!);
+	await result.admins.authWithPassword(
+		process.env["POCKETBASE_EMAIL"]!,
+		process.env["POCKETBASE_PASSWORD"]!,
+	);
+	return result;
+})();
 
 export enum Tables {
 	images = "images",
