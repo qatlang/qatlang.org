@@ -194,6 +194,7 @@ export interface ICommit {
 export interface IPost {
 	collectionId: string;
 	id: string;
+	slug?: string;
 	title: string;
 	content: string;
 	timestamp: string;
