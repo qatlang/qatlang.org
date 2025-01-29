@@ -103,15 +103,8 @@ export function Markdown(props: {
 						typeof (value.children as any[])[0] === "string" &&
 						(value.children as any[])[0].toLowerCase().startsWith("[x] ");
 					return (
-						<li
-							className={
-								hasBlankCheckbox || hasTickedCheckbox
-									? "my-2 flex flex-row"
-									: "my-2"
-							}
-							{...value}
-						>
-							<pre className="mr-2 inline">
+						<li className="my-2 flex flex-row" {...value}>
+							<pre className="mr-2">
 								{value.ordered
 									? (value.index + 1).toString() + "."
 									: "•"}
@@ -190,7 +183,7 @@ export function Markdown(props: {
 					}
 					return (
 						<a
-							className="group inline px-2 py-1 bg-[#0066ff33] hover:bg-[#0066ff55] underline text-[#0066ff] hover:text-[#0000ff] dark:hover:text-[#0099ff] rounded-lg"
+							className="group inline px-2 py-1 bg-[#0088ff33] hover:bg-[#0088ff55] underline dark:text-[#0088ff] text-[#0055ff] hover:text-[#0000ff] dark:hover:text-[#0099ff] rounded-lg"
 							{...{
 								...value,
 								href: usableHREF,
@@ -201,7 +194,7 @@ export function Markdown(props: {
 						>
 							{isInsideLink && (
 								<svg
-									className="inline h-5 w-5 mr-1 stroke-[#0066ff] group-hover:stroke-[#0000ff] dark:group-hover:stroke-[#0099ff]"
+									className="inline h-5 w-5 mr-1 stroke-[#0088ff] group-hover:stroke-[#0000ff] dark:group-hover:stroke-[#0099ff]"
 									viewBox="0 0 24 24"
 									fill="none"
 									xmlns="http://www.w3.org/2000/svg"
