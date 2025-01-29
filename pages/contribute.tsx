@@ -7,13 +7,14 @@ export default function Contribute() {
 		"Checkout the qat programming language at https://qatlang.org",
 	);
 	return (
-		<div className="flex flex-col flex-grow self-center w-full md:w-[80%] px-4 pt-10">
+		<div className="flex flex-col self-center h-full w-full px-8 pt-10 overflow-y-auto">
 			<title>Contribute | QAT Language</title>
-			<p className="text-2xl font-bold font-mono uppercase tracking-wide mb-10">
-				Contribute to the project
-			</p>
-			<div className="flex flex-col md:flex-row w-fit self-center">
-				<div className="flex flex-col self-center flex-grow px-8">
+
+			<div className="flex flex-col md:flex-row h-full self-center gap-2 lg:gap-4">
+				<div className="flex flex-col">
+					<p className="text-2xl font-bold mb-6">
+						Contribute to the project
+					</p>
 					<div className="flex flex-row self-center text-lg">
 						<p className="self-center">Give us a ⭐ on</p>
 						<a
@@ -111,7 +112,7 @@ export default function Contribute() {
 						</div>
 					</div>
 				</div>
-				<div className="flex flex-col mt-14 md:mt-0 self-center w-[30rem] px-6 py-4 bg-[#ffffff] dark:bg-[#222222] border-2 border-midGray rounded-xl shadow-lg">
+				<div className="flex flex-col mt-14 md:mt-0 h-fit md:w-[25rem] lg:w-[30rem] px-6 py-4 bg-[#ffffff] dark:bg-[#222222] border-2 border-midGray rounded-xl shadow-lg">
 					<div className="flex flex-row self-center">
 						<HelpIcon />
 						<div className="flex flex-col px-4 text-4xl font-bold self-center">
