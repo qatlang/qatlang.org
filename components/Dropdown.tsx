@@ -11,6 +11,7 @@ export function Dropdown<T>(props: {
 	default: T | null;
 	nonePrompt?: string;
 	onChange?: (value: T | null, index: number | null) => void;
+	disallowNone?: boolean;
 }) {
 	const [isExpanded, setExpanded] = useState<boolean>(false);
 
@@ -29,7 +30,7 @@ export function Dropdown<T>(props: {
 		setChoice(getChoiceForDefault());
 	}, [props.default]);
 	return (
-		<div className="flex flex-col">
+		<div className="flex flex-col font-mono">
 			<div
 				className="h-12 flex flex-row px-4 py-2 rounded-lg select-none cursor-pointer bg-white hover:bg-[#dddddd] border-2 border-midGray dark:bg-black dark:hover:bg-[#222222] relative my-2"
 				style={{
@@ -44,7 +45,7 @@ export function Dropdown<T>(props: {
 				}}
 			>
 				{props.name && (
-					<div className="font-mono text-midGray self-center text-sm uppercase tracking-widest mr-2">
+					<div className="text-midGray self-center text-sm tracking-widest uppercase mr-2">
 						{props.name}
 					</div>
 				)}
@@ -92,25 +93,27 @@ export function Dropdown<T>(props: {
 							</div>
 						))}
 
-						<div
-							key="none"
-							className="font-bold py-2 px-4 hover:bg-[#cccccc] dark:hover:bg-[#333333]"
-							style={{
-								backgroundColor:
-									choice === null ? "#128f5f" : undefined,
-								color: choice === null ? "white" : undefined,
-							}}
-							onClick={() => {
-								if (choice !== null) {
-									setChoice(null);
-									if (props.onChange !== undefined) {
-										props.onChange(null, null);
+						{!(props.disallowNone ?? false) && (
+							<div
+								key="none"
+								className="font-bold py-2 px-4 hover:bg-[#cccccc] dark:hover:bg-[#333333]"
+								style={{
+									backgroundColor:
+										choice === null ? "#128f5f" : undefined,
+									color: choice === null ? "white" : undefined,
+								}}
+								onClick={() => {
+									if (choice !== null) {
+										setChoice(null);
+										if (props.onChange !== undefined) {
+											props.onChange(null, null);
+										}
 									}
-								}
-							}}
-						>
-							{props.nonePrompt ?? "None"}
-						</div>
+								}}
+							>
+								{props.nonePrompt ?? "None"}
+							</div>
+						)}
 					</div>
 				)}
 			</div>
