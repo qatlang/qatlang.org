@@ -5,59 +5,42 @@ import youtubeIcon from "../public/youtube.png";
 import aldrinImg from "../public/aldrin.jpeg";
 import Button from "../components/Button";
 import { examples, languageFeatures } from "../models/data";
-import { useEffect, useState } from "react";
-import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import Select from "react-select";
+import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import useWindowSize from "../utils/WindowSize";
-import { ICommit } from "../models/interfaces";
 import { SocialIcon } from "../components/SocialIcon";
-import Markdown from "../components/Markdown";
-import styles from "../styles/index.module.css";
-import { useTheme } from "../utils/darkMode";
-import { Env } from "../models/env";
+import Markdown, { ExternalLinkIcon } from "../components/Markdown";
+import { DropdownNumber } from "../components/Dropdown";
+
+const repoList: { name: string; link: string }[] = [
+	{ name: "compiler", link: "https://github.com/qatlang/qat" },
+	{ name: "language-server", link: "https://github.com/qatlang/qatls" },
+	{ name: "treesitter", link: "https://github.com/qatlang/tree-sitter-qat" },
+	{ name: "website", link: "https://github.com/qatlang/qatlang.org" },
+];
 
 export default function Home() {
-	let [latestCommit, setLatestCommit] = useState<ICommit | null>(null);
-	useEffect(() => {
-		fetch("/api/latestCommit", {
-			method: "POST",
-			cache: "no-store",
-			body: JSON.stringify({ confirmationKey: Env.confirmationKey() }),
-		})
-			.then(async (c) => {
-				if (c.status === 200) {
-					const commit = (await c.json()) as ICommit;
-					setLatestCommit(commit);
-				}
-				console.log(c.status);
-			})
-			.catch((_) => {
-				console.error("Error while fetching the latest commit");
-			});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
 	const Feature = (props: { title: string; content: string }) => {
 		return (
-			<div className="flex flex-col bg-white dark:bg-black text-left p-3 sm:p-8 border-2 border-solid border-gray-300 shadow-lg dark:shadow-none dark:border-[#333333] rounded-3xl">
-				<p className="font-bold text-xl sm:text-2xl mb-2">{props.title}</p>
-				<Markdown>{props.content}</Markdown>
+			<div className="flex flex-col bg-white dark:bg-black text-left px-2 py-1 sm:px-4 sm:py-2 border-2 border-solid border-gray-300 shadow-lg dark:shadow-none dark:border-[#333333] rounded-xl md:rounded-2xl">
+				<p className="font-bold text-base sm:text-lg">{props.title}</p>
+				<Markdown className="text-sm sm:text-base">
+					{props.content}
+				</Markdown>
 			</div>
 		);
 	};
 
 	return (
-		<div className="flex flex-col w-[100%]">
+		<div className="flex flex-col w-full h-full overflow-y-auto">
 			<title>Home | QAT Language</title>
-			<div className="flex flex-col xl:w-[1280px] lg:w-[90%] xs:w-[95%] self-center">
-				<div className="flex flex-col lg:flex-row pt-2 sm:pt-6 md:pt-14 lg:h-96 lg:mb-10">
+			<div className="flex flex-col xl:w-[1200px] lg:w-[90%] xs:w-[95%] self-center">
+				<div className="flex flex-col lg:flex-row pt-2 sm:pt-2 md:pt-4 lg:h-[21rem] mb-4">
 					<MobileCatchphrase />
 					<div className="lg:w-[25%] w-[100%] flex flex-row lg:flex-col align-middle justify-center">
 						<Image
-							className="self-center xs:h-[48vw] xs:w-[40vw] h-[41vw] w-[30vw] lg:h-auto lg:w-[100%] pointer-events-none select-none"
+							className="self-center xs:h-56 xs:w-auto sm:h-auto sm:w-60 lg:h-full lg:w-auto pointer-events-none select-none"
 							src={lavaCapsule}
 							priority
 							alt="lava-cover"
@@ -72,16 +55,48 @@ export default function Home() {
 						<Examples />
 					</div>
 				</div>
-				<ProjectInfo latestCommit={latestCommit} />
-				<p className="my-5 lg:my-8 text-lg sm:text-xl lg:text-2xl font-bold">
-					What is qat all about?
+				<div className="font-mono flex flex-row flex-grow md:text-xl h-fit w-full mt-2 mb-2 lg:mb-0">
+					<div className="h-[0.12rem] flex-grow bg-black dark:bg-white opacity-20 self-center mr-8" />
+					<div className="font-mono flex flex-col self-center">
+						<div className="flex flex-row w-fit align-middle justify-center whitespace-pre-wrap text-[0.6rem] md:text-base">
+							Created with ❤️ in <b>Kerala, India</b> 🇮🇳 by
+						</div>
+						<div className="flex flex-row mt-2 w-fit h-fit">
+							<p className="font-bold text-sm md:text-2xl mt-1 md:mt-0 mr-4">
+								Aldrin Mathew
+							</p>
+							<Markdown
+								className="text-sm md:text-base mt-1"
+								children={"[github](https://github.com/aldrinmathew)"}
+							/>
+						</div>
+					</div>
+					<Image
+						className="w-20 h-20 md:w-28 md:h-28 rounded-full ml-6"
+						src={aldrinImg}
+						alt="Aldrin Mathew Profile Picture"
+					/>
+					<div className="h-[0.12rem] flex-grow bg-black dark:bg-white opacity-20 self-center ml-8" />
+				</div>
+				<p className="font-mono w-fit mb-1 tracking-widest font-bold text-base opacity-40 px-2 md:px-0">
+					REPOSITORIES
 				</p>
-				<div className="mx-2 mb-5 flex flex-col space-y-4 sm:hidden">
+				<div className="grid grid-cols-2 md:flex md:flex-row mb-4 sm:mb-1 font-mono gap-2 md:gap-3 px-2 md:px-0">
+					{repoList.flatMap((rep) => (
+						<a href={rep.link} target="_blank">
+							<div className="group cursor-pointer text-sm md:text-base px-2 py-1 bg-[#0088ff33] hover:bg-[#0088ff55] underline dark:text-[#0088ff] text-[#0055ff] hover:text-[#0000ff] dark:hover:text-[#0099ff] rounded-lg">
+								{rep.name}
+								<ExternalLinkIcon colored />
+							</div>
+						</a>
+					))}
+				</div>
+				<div className="mx-2 mb-5 flex flex-col gap-3 sm:hidden">
 					{languageFeatures.flatMap((f) => (
 						<Feature title={f.title} content={f.content} />
 					))}
 				</div>
-				<div className="hidden sm:flex sm:flex-row space-x-2 lg:space-x-6 xs:w-[95%] self-center my-2 lg:my-4">
+				<div className="hidden sm:flex sm:flex-row gap-2 lg:gap-3 w-full self-center mt-2 lg:mt-4 mb-10">
 					{[
 						{ a: 0, b: Math.floor(languageFeatures.length / 2) },
 						{
@@ -89,7 +104,7 @@ export default function Home() {
 							b: languageFeatures.length,
 						},
 					].flatMap((i) => (
-						<div className="flex flex-col space-y-2 lg:space-y-6 w-[50%]">
+						<div className="flex flex-col gap-2 lg:gap-3 w-[50%]">
 							{languageFeatures.slice(i.a, i.b).flatMap((feature) => {
 								return (
 									<Feature
@@ -108,100 +123,40 @@ export default function Home() {
 
 function Examples() {
 	const [active, setActive] = useState(1);
-	const [isDark, _] = useTheme()!;
 	const size = useWindowSize();
 	return (
 		<>
 			{
 				<div className="flex flex-col font-mono">
-					<div className="flex flex-row font-mono align-middle justify-between">
-						<p className="font-bold text-md text-left">Examples</p>
-						<Select
-							className="w-1/2 text-sm mb-2 text-black dark:text-white"
-							options={examples.flatMap((ex, i) => {
+					<div className="flex flex-row justify-end">
+						<DropdownNumber
+							name="Examples"
+							className="w-96 lg:w-full"
+							items={examples.flatMap((ex, i) => {
 								return {
+									name: ex.title,
 									value: i,
-									label: ex.title,
 								};
 							})}
-							defaultValue={{ value: 1, label: examples[1].title }}
-							onChange={(val) => {
-								if (val) {
-									setActive(val.value);
-								}
-							}}
-							styles={{
-								singleValue: (styles, _) => {
-									return {
-										...styles,
-										color: isDark ? "white" : "black",
-										fontWeight: "bold",
-										fontSize: size.isVertical() ? "1rem" : "1rem",
-									};
-								},
-								menuList: (styles, _) => {
-									return {
-										...styles,
-										borderRadius: "5px",
-										fontSize: "calc(1rem)",
-										border: "1px solid #555555",
-									};
-								},
-								option: (styles, state) => {
-									return {
-										...styles,
-										// backgroundColor: state.isSelected
-										//   ? "#128f5f"
-										//   : isDark
-										//   ? "#333333"
-										//   : "white",
-										color:
-											isDark || state.isSelected ? "white" : "black",
-										fontWeight: state.isSelected ? "bold" : "normal",
-									};
-								},
-							}}
-							theme={{
-								colors: {
-									primary: "#128f5f",
-									primary75: "#128f5fcc",
-									primary50: "#128f5f99",
-									primary25: "#128f5f55",
-									danger: "#ff0055",
-									dangerLight: "#ff0055",
-									neutral0: isDark ? "#303030" : "#ffffff",
-									neutral5: isDark ? "#555555" : "#aaaaaa",
-									neutral10: isDark ? "#666666" : "#999999",
-									neutral20: isDark ? "#777777" : "#888888",
-									neutral30: isDark ? "#888888" : "#777777",
-									neutral40: isDark ? "#999999" : "#666666",
-									neutral50: isDark ? "#aaaaaa" : "#555555",
-									neutral60: isDark ? "#bbbbbb" : "#444444",
-									neutral70: isDark ? "#cccccc" : "#333333",
-									neutral80: isDark ? "#dddddd" : "#222222",
-									neutral90: isDark ? "#ffffff" : "#000000",
-								},
-								borderRadius: 5,
-								spacing: {
-									baseUnit: 2,
-									controlHeight: 0,
-									menuGutter: 0,
-								},
+							default={active}
+							disallowNone
+							onChange={(val, _) => {
+								setActive(val!);
 							}}
 						/>
 					</div>
 					<div
-						className="shadow-lg dark:shadow-none w-[100%] max-h-72 border-2 border-midGray bg-[#dce7f9] dark:bg-[#303030] rounded-lg pr-1 pt-1 font-bold text-black dark:text-[#dddddd] flex flex-col align-top justify-start overflow-x-clip overflow-y-auto"
+						className="shadow-lg dark:shadow-none w-full lg:max-w-[27rem] lg:h-60 border-2 border-midGray bg-[#dce7f9] dark:bg-[#303030] rounded-lg pr-1 pt-1 font-bold text-black dark:text-[#dddddd] flex flex-col align-top justify-start overflow-x-auto overflow-y-auto"
 						style={{
 							fontSize: size.isVertical() ? "3.3vmin" : "1.8vmin",
 						}}
 					>
 						{examples[active].content.split("\n").map((elem, i) => (
 							<div
-								className="w-auto text-base flex flex-row align-middle"
+								className="w-auto text-sm sm:text-base flex flex-row align-middle"
 								key={"codeLineRow." + i.toString()}
 							>
-								<div className="pl-5 whitespace-pre mb-1">{elem}</div>
+								<div className="pl-3 whitespace-pre mb-1">{elem}</div>
 							</div>
 						))}
 					</div>
@@ -215,16 +170,16 @@ function Catchphrase(props: { className?: string }) {
 	return (
 		<div className={props.className ?? "font-mono text-left"}>
 			<div className="flex flex-row">
-				<div className="font-bold xl:text-4xl lg:text-3xl md:text-4xl sm:text-4xl text-2xl mb-2">
+				<div className="font-bold xl:text-4xl lg:text-2xl md:text-4xl sm:text-4xl text-2xl mb-2">
 					{"Closer to your machine's heart"}
 				</div>
 				<div className="text-4xl sm:text-6xl self-center pr-5 sm:pr-10">
 					🦾
 				</div>
 			</div>
-			<div className="pt-2 sm:pb-3 xl:text-2xl lg:text-xl md:text-2xl sm:text-xl text-sm">
+			<div className="pt-2 sm:pb-3 xl:text-2xl lg:text-lg md:text-2xl sm:text-xl text-sm">
 				{
-					"Superfast modern systems language for efficient & maintainable software..."
+					"Superfast modern systems language for reliable & maintainable software..."
 				}
 			</div>
 		</div>
@@ -242,119 +197,9 @@ function MobileCatchphrase() {
 			</div>
 			<div className="pt-2 sm:pb-3 lg:text-2xl md:text-2xl sm:text-xl text-base">
 				{
-					"Superfast modern systems language for efficient & maintainable software..."
+					"Superfast modern systems language for reliable & maintainable software..."
 				}
 			</div>
-		</div>
-	);
-}
-
-function SmallStat(props: {
-	title: string;
-	description: string;
-	emoji: string;
-}) {
-	return (
-		<div className="flex flex-row flex-1 align-middle justify-center lg:mt-0 w-[50%] lg:w-auto">
-			<div className="flex flex-col align-middle justify-center text-base sm:text-lg mr-2">
-				<div className="font-mono font-bold text-xl sm:text-2xl">
-					{props.title}
-				</div>
-				{props.description}
-			</div>
-			<div className="text-4xl sm:text-5xl select-none self-center">
-				{props.emoji}
-			</div>
-		</div>
-	);
-}
-
-function ProjectInfo(props: { latestCommit: ICommit | null }) {
-	return (
-		<div
-			className={
-				props.latestCommit
-					? "flex flex-col lg:w-[95%] lg:flex-row my-3 py-4 rounded-md self-center justify-center"
-					: styles.pulseLoad +
-						" h-5 rounded-md shadow-lg dark:shadow-none mx-4 my-6"
-			}
-		>
-			{
-				//   props.workHours &&
-				props.latestCommit && (
-					<>
-						<div className="flex flex-col shadow-lg dark:shadow-none font-mono lg:h-64 self-center border-2 border-solid border-midGray lg:w-[60%] lg:mx-0 w-[95%] bg-white dark:bg-black rounded-3xl items-start justify-start p-4 sm:p-7">
-							<div className="flex flex-row align-middle justify-center mb-4 text-xs sm:text-sm">
-								<p className="py-1">Latest Commit in</p>
-								<div className="h-fit flex flex-row self-center align-middle justify-center text-white bg-styleGreen font-bold py-[0.13rem] sm:py-1 px-1 sm:px-2 mx-2 rounded-md sm:rounded-lg">
-									{props.latestCommit.repository +
-										":" +
-										(props.latestCommit.ref &&
-										props.latestCommit.ref.includes("/")
-											? props.latestCommit.ref.split("/")[
-													props.latestCommit.ref.split("/")
-														.length - 1
-												]
-											: props.latestCommit.ref)}
-								</div>
-								<p className="py-1 self-center">on</p>
-								<div className="font-mono font-bold self-center text-white bg-[#4169e1] h-fit rounded-md sm:rounded-lg mx-2 py-[0.13rem] sm:py-1 px-1 sm:px-2">
-									{props.latestCommit.site}
-								</div>
-							</div>
-							<ReactMarkdown
-								className="font-mono text-left md:text-[1.3em] text-lg font-bold mb-1"
-								components={{
-									code: (value) => (
-										<pre className="inline bg-[#ffffff33] rounded-md px-1">
-											{value.children}
-										</pre>
-									),
-								}}
-								// eslint-disable-next-line react/no-children-prop
-								children={props.latestCommit.title}
-							/>
-							<Markdown className="overflow-y-auto text-left text-sm md:text-lg">
-								{props.latestCommit.message}
-							</Markdown>
-						</div>
-						<div className="shadow-lg dark:shadow:none font-mono flex flex-row flex-grow md:text-xl border-solid border-2 border-midGray lg:h-64 lg:w-auto lg:mt-0 mt-3 sm:mt-5 w-[95%] lg:self-auto self-center align-middle justify-center bg-white dark:bg-black rounded-3xl lg:ml-5 p-5">
-							<div className="font-mono flex flex-col flex-grow self-center">
-								<div className="flex flex-row w-auto align-middle justify-center">
-									<div className="flex flex-col mr-5 self-center">
-										<p>Created with ❤️</p>
-										<p>
-											in <b>Kerala, India</b> 🇮🇳 by
-										</p>
-									</div>
-								</div>
-								<div className="flex flex-row self-center mt-8">
-									<div className="self-center mr-4">
-										<Link
-											href="https://github.com/aldrinmathew"
-											target="_blank"
-										>
-											<Image
-												className="w-12 dark:bg-transparent bg-black rounded-full border-4 border-transparent hover:border-solid hover:border-styleGreen transition-colors"
-												src={githubIcon}
-												alt="Github icon"
-											/>
-										</Link>
-									</div>
-									<p className="font-bold self-center md:text-2xl">
-										Aldrin Mathew
-									</p>
-								</div>
-							</div>
-							<Image
-								className="w-[120px] h-[120px] rounded-full self-center"
-								src={aldrinImg}
-								alt="Aldrin Mathew"
-							/>
-						</div>
-					</>
-				)
-			}
 		</div>
 	);
 }
@@ -383,7 +228,7 @@ function AllButtons(props: { className: string }) {
 					}}
 				>
 					<svg
-						className="self-center mr-2 h-6 w-6 sm:h-8 sm:w-8"
+						className="self-center mr-2 h-6 w-6 sm:h-6 sm:w-6 xl:h-8 xl:w-8"
 						viewBox="0 0 20 20"
 						fill="none"
 						xmlns="http://www.w3.org/2000/svg"
@@ -401,13 +246,13 @@ function AllButtons(props: { className: string }) {
 			<div className="flex flex-row mt-5 mb-10 ml-[-0.5rem] sm:ml-0">
 				<SocialIcon icon={githubIcon} link={"https://github.com/qatlang"} />
 				<SocialIcon
+					icon={youtubeIcon}
+					link={"https://youtube.com/@aldrinmathew"}
+				/>
+				<SocialIcon
 					icon={discordIcon}
 					link={"https://discord.gg/CNW3Uvptvd"}
 					color="discord"
-				/>
-				<SocialIcon
-					icon={youtubeIcon}
-					link={"https://youtube.com/@aldrinmathew"}
 				/>
 			</div>
 		</div>
