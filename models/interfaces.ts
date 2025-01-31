@@ -13,6 +13,7 @@ export interface ILanguageRelease {
 		name: string;
 		downloads: number;
 		platform: string;
+		icon: string;
 		architecture: string;
 		size: string;
 		target: string;
