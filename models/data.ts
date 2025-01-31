@@ -9,7 +9,7 @@ export const examples: ILanguageExample[] = [
 ]`,
 	},
 	{
-		title: "Receive CLI arguments",
+		title: "CLI Arguments",
 		content: `pub main -> int
 (args :: slice![cStr]) [
 	loop in args => let item, i [
@@ -24,106 +24,49 @@ export const examples: ILanguageExample[] = [
 
 export const languageFeatures = [
 	{
-		title: "Customisable RAII",
-		content: `
-_**R**esource **A**cquisition **I**s **I**nitialisation_ is a principle in which acquiring/creating a resource initialises it and it is automatically destroyed when the scope/lifetime of the resource ends. In \`qat\`, this is achieved via Constructors and Destructors.
-However if any type you create is trivially movable, that is if the instance can be moved by moving the bits, then that type will not have destructors by default.
-
-\`\`\`qat
-type Employee {
-	pub id      :: i64,
-	pub section :: i32.
-}
-\`\`\`
-
-`,
+		title: "Skill methods & Polymorphs",
+		content:
+			"Skills enable behavioural polymorphism in the language so that various types can share behaviour without being involved in each others' implementation. Polymorphs are objects that store information about the behaviour of a type that enables you to invoke behaviour of the data without knowing the underlying type.",
 	},
 	{
-		title: "Mix types (Sum types)",
-		content: `
-What if you want a number type that could either be an integer or a float? You use \`mix\` type in qat. This is how runtime type polymorphism is achieved in \`qat\`. You can mix many types into a single type.
-\`\`\`qat
-mix Number {
-	Int :: i64,
-	Float :: f64,
-}
-\`\`\`
-`,
+		title: "Mix types / Sum types",
+		content: `What if you want to represent multiple possibilities of types as a single type? In qat, \`mix\` types expose the functionality of runtime polymorphism on the type level. You can mix multiple datatypes into a single type, safely, without losing information about the underlying type.`,
 	},
 	{
 		title: "Marks / Pointers",
-		content: `
-		Marks/Pointers in qat introduces the concept of ownership. This allows you to keep track of the origin of the memory at compile time (zero cost), and also introduces some safe pointer types in the language. If you are a fan of manual memory management, there is also heap ownership for that. There also are anonymous marks where you don't worry about the owner of the data.
-\`\`\`qat
-mark:[i32] // Anonymous
-mark:[i32, heap] // Manual memory management
-mark:[i32, region(Region)] // Always Safe
-mark:[i32, static] // Always Safe
-\`\`\`
-`,
+		content: `Marks/Pointers in qat introduces the concept of ownership, optionally. This allows you to keep track of the origin of the memory at compile time (zero cost), and also introduces several safe pointer types in the language. The design of the language has given priority to a multitude of memory management strategies.`,
 	},
 	{
-		title: "No Garbage Collection. No pauses.",
+		title: "No garbage collection. No borrow checking",
 		content:
-			"RAII, Pointer ownership, Copy & Move semantics, Trivial copy & move and other key features of the language makes it unnecessary for the language to have garbage collection. This means that your programs are never throttled by the language runtime. No freezes. No GC pauses.",
+			"There is no garbage collection happening when a program written in qat is running. So there is nothing from the language runtime that drags down the performance of your program. There is also no borrow checking to drag down the programmer during development and force them to circumvent the semantics of the language to get productivity. Such concepts come off as philosophical, but ends up being pretentious and over complicated, introducing guardrails even in situations that cannot benefit from them.",
+	},
+	{
+		title: "Customisable Lifetimes",
+		content: `Use constructors, destructors, copy & move semantics and the type system to your advantage to manage resources efficiently. You have complete control over the lifetimes of the objects in your program logic.`,
 	},
 	{
 		title: "Pattern Matching",
-		content: `
-\`qat\` makes it easy for you to work with mix types by enabling you to do pattern matching over it. So essentially you can \`mix\` and \`match\` data. This also makes it easy to do string comparisons and have optimisations to remove unused branches of code when the conditions are known at compile time.
-\`\`\`qat
-new value = Number::Int(0).
-mix (value) [
-	::Int(i) => [
-		say "Number is Int".
-	]
-	::Float(f) => [
-		say "Number is Float".
-	]
-]
-\`\`\`
-`,
+		content: `This makes the rich type system much more useful and provides novel ways to analyse and manipulate data in the language. There is also a novel way of inline pattern matching, that replaces the classic ternary operator, and provides a simple syntax for simple logic.`,
 	},
 	{
-		title: "Prerun Expressions",
+		title: "Extensive Compile Time Execution",
 		content:
-			"What if you can use the compiler to execute logic at compile time rather than during runtime? `qat` takes compile time meta-programming to the next level and enables you to use any type that can be constructed from prerun types to be used in prerun expressions",
+			"Prerun expressions in qat are expressions that are calculated at compile-time. Unlike other languages that support compile-time execution, in qat, this is taken to the next level. You can use these expressions to change the behaviour of the code according to the platform, customize the build process, bind to external libraries programmatically, do advanced metaprogramming, statically analyse conditions, and much more...",
 	},
 	{
-		title: "Generic Types (on steroids)",
+		title: "Generic Types",
 		content:
-			"Normal types (structs) and type definitions in `qat` can be generic types. You can input types and even **prerun expressions** to instantiate different variants of the generic type. In `qat` packing of data was actively considered during design to support memory constrained environments, so you can tightly pack the generic variant types",
+			"Struct types and type definitions in qat can be generic. Both types and prerun expressions can be used to instantiate variants of such a generic type. The power of prerun expressions takes generic types to a new level and makes it way more modular and powerful.",
 	},
 	{
 		title: "Mutable Value Semantics",
-		content: `
-Value Semantics allows the programmer to use/manage data whose lifetime is not bound to an address. This is also used in conjunction with copy & move semantics. If your type is trivially movable, you can access member fields of the value directly from (virtual) registers. Exploiting this behaviour, users can achieve extreme performance
-\`\`\`qat
-customStr -> str [
-	give "This is a custom string".
-]
-
-pub main -> int [
-	new strLen = customStr()'length.
-	give 0.
-]
-\`\`\`
-You can do the above in other languages as well, but in the above case, since \`str\` type is trivially movable, the length is extracted directly from the value without allocating it. 
-`,
+		content:
+			"You can use and manage objects whose lifetime is not bound to an address if your type is trivially copyable & trivially movable. You can access member fields of the value directly from (virtual) registers. You can do something similar in other languages as well because of niche optimisations, but in qat, the member fields can be extracted directly from the value without allocating it first.",
 	},
 	{
 		title: "Copy & Move semantics",
-		content: `
-Copy Constructor, Move Constructor, Copy Assignment & Move Assignment. This makes it easy to manage duplication/ownership of data. Both copy & move occurs via references, and in general, is done before an instance is passed to a different context.
-\`\`\`qat
-new strVal = std:String:from("").
-new var otherVal = strVal'copy.
-new anotherVal = otherVal'move.
-\`\`\`
-`,
-	},
-	{
-		title: "References",
-		content: `One major advantage of references is the convenience you get with it, especially when you use operators. References also makes it possible to easily use data without making copies or moving data. You get all that convenience in \`qat\`. References are meant to be used when the programmer is sure that the instance referred to outlives the current context of execution. They are usually expected to not be stored anywhere`,
+		content:
+			"qat provides copy & move semantics to enable the programmer to transfer ownership of data between contexts. This feature has a distinction in qat - if the type in question is not trivially copyable or trivially movable, copy or move has to be done manually by the programmer. This is to make sure that the programmer is aware of the transfer of ownership of data in the codebase.",
 	},
 ];
