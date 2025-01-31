@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { CodeProps } from "react-markdown/lib/ast-to-react";
 import "react-toastify/dist/ReactToastify.css";
@@ -30,7 +30,7 @@ export function CodeBlock(props: CodeProps & { allowHTML: boolean }) {
 	) : (
 		<div className={"my-4 flex flex-col " + IosevkaFont.className}>
 			<div
-				className="text-left block overflow-x-auto bg-[#dce7f9] border-midGray dark:bg-[#2f383e] p-3 rounded-t-lg rounded-br-lg border-2 transition-colors"
+				className="text-left block overflow-x-auto bg-[#dce7f9] border-midGray dark:bg-[#2f383e] p-3 rounded-t-lg rounded-br-lg border-2"
 				dangerouslySetInnerHTML={
 					props.allowHTML
 						? { __html: props.children.toString() }
@@ -40,7 +40,7 @@ export function CodeBlock(props: CodeProps & { allowHTML: boolean }) {
 				{props.allowHTML ? undefined : props.children}
 			</div>
 			<div
-				className="font-bold place-self-start select-none transition-colors w-fit px-1 py-[0.05rem] bg-gray-600 text-white dark:bg-gray-400 dark:text-black text-sm rounded-b-md cursor-pointer hover:bg-black hover:text-white active:bg-white hover:dark:bg-white hover:dark:text-black active:dark:bg-black"
+				className="font-bold place-self-start select-none w-fit px-1 py-[0.05rem] bg-gray-600 text-white dark:bg-gray-400 dark:text-black text-sm rounded-b-md cursor-pointer hover:bg-black hover:text-white active:bg-white hover:dark:bg-white hover:dark:text-black active:dark:bg-black"
 				style={{
 					backgroundColor:
 						copied === "copied"
@@ -104,24 +104,26 @@ export function Markdown(props: {
 						(value.children as any[])[0].toLowerCase().startsWith("[x] ");
 					return (
 						<li className="my-2 flex flex-row" {...value}>
-							<pre className="mr-2">
+							<pre className="whitespace-pre inline opacity-70">
 								{value.ordered
-									? (value.index + 1).toString() + "."
-									: "•"}
+									? (value.index + 1).toString() + ". "
+									: "-> "}
 							</pre>
-							{(hasBlankCheckbox || hasTickedCheckbox) && (
-								<input
-									className="mr-2 h-4 w-4 self-center"
-									type="checkbox"
-									checked={hasTickedCheckbox}
-								/>
-							)}
-							{hasBlankCheckbox || hasTickedCheckbox
-								? [
-										(value.children as string[])[0].substring(4),
-										...value.children.toSpliced(0, 1),
-									]
-								: value.children}
+							<div>
+								{(hasBlankCheckbox || hasTickedCheckbox) && (
+									<input
+										className="mr-2 h-4 w-4 self-center"
+										type="checkbox"
+										checked={hasTickedCheckbox}
+									/>
+								)}
+								{hasBlankCheckbox || hasTickedCheckbox
+									? [
+											(value.children as string[])[0].substring(4),
+											...value.children.toSpliced(0, 1),
+										]
+									: value.children}
+							</div>
 						</li>
 					);
 				},
@@ -207,24 +209,7 @@ export function Markdown(props: {
 								</svg>
 							)}
 							{value.children}
-							{!isInsideLink && (
-								<svg
-									className="inline h-5 w-5 ml-1 stroke-[#0066ff] group-hover:stroke-[#0000ff] dark:group-hover:stroke-[#0099ff]"
-									viewBox="0 0 24 24"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<g id="Interface / External_Link">
-										<path
-											id="Vector"
-											d="M10.0002 5H8.2002C7.08009 5 6.51962 5 6.0918 5.21799C5.71547 5.40973 5.40973 5.71547 5.21799 6.0918C5 6.51962 5 7.08009 5 8.2002V15.8002C5 16.9203 5 17.4801 5.21799 17.9079C5.40973 18.2842 5.71547 18.5905 6.0918 18.7822C6.5192 19 7.07899 19 8.19691 19H15.8031C16.921 19 17.48 19 17.9074 18.7822C18.2837 18.5905 18.5905 18.2839 18.7822 17.9076C19 17.4802 19 16.921 19 15.8031V14M20 9V4M20 4H15M20 4L13 11"
-											stroke-width="2"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-										/>
-									</g>
-								</svg>
-							)}
+							{!isInsideLink && <ExternalLinkIcon colored />}
 						</a>
 					);
 				},
@@ -252,5 +237,30 @@ export function Markdown(props: {
 			// eslint-disable-next-line react/no-children-prop
 			children={props.children}
 		/>
+	);
+}
+
+export function ExternalLinkIcon(props: { colored?: boolean }) {
+	return (
+		<svg
+			className={
+				props.colored
+					? "inline h-5 w-5 ml-1 stroke-[#0066ff] group-hover:stroke-[#0000ff] dark:group-hover:stroke-[#0099ff]"
+					: "inline h-5 w-5 ml-1 stroke-black dark:stroke-white opacity-70"
+			}
+			viewBox="0 0 24 24"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<g id="Interface / External_Link">
+				<path
+					id="Vector"
+					d="M10.0002 5H8.2002C7.08009 5 6.51962 5 6.0918 5.21799C5.71547 5.40973 5.40973 5.71547 5.21799 6.0918C5 6.51962 5 7.08009 5 8.2002V15.8002C5 16.9203 5 17.4801 5.21799 17.9079C5.40973 18.2842 5.71547 18.5905 6.0918 18.7822C6.5192 19 7.07899 19 8.19691 19H15.8031C16.921 19 17.48 19 17.9074 18.7822C18.2837 18.5905 18.5905 18.2839 18.7822 17.9076C19 17.4802 19 16.921 19 15.8031V14M20 9V4M20 4H15M20 4L13 11"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				/>
+			</g>
+		</svg>
 	);
 }

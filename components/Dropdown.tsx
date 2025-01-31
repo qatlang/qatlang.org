@@ -6,6 +6,7 @@ interface DropdownItem<T> {
 }
 
 export function Dropdown<T>(props: {
+	className?: string;
 	name?: string;
 	items: DropdownItem<T>[];
 	default: T | null;
@@ -30,9 +31,11 @@ export function Dropdown<T>(props: {
 		setChoice(getChoiceForDefault());
 	}, [props.default]);
 	return (
-		<div className="flex flex-col font-mono">
+		<div
+			className={(props.className ?? "") + " flex flex-col font-mono mb-2"}
+		>
 			<div
-				className="h-12 flex flex-row px-4 py-2 rounded-lg select-none cursor-pointer bg-white hover:bg-[#dddddd] border-2 border-midGray dark:bg-black dark:hover:bg-[#222222] relative my-2"
+				className="h-12 flex flex-row px-4 py-2 rounded-lg select-none cursor-pointer bg-white hover:bg-[#dddddd] border-2 border-midGray dark:bg-black dark:hover:bg-[#222222] relative"
 				style={{
 					borderBottomLeftRadius: isExpanded ? "0" : undefined,
 					borderBottomRightRadius: isExpanded ? "0" : undefined,
@@ -126,3 +129,5 @@ function DropdownItem() {
 }
 
 export const DropdownString = Dropdown<string>;
+
+export const DropdownNumber = Dropdown<number>;
