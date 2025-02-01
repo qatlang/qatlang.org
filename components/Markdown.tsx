@@ -127,6 +127,12 @@ export function Markdown(props: {
 						</li>
 					);
 				},
+				h1: (value) => <h1 className="text-5xl font-bold" {...value} />,
+				h2: (value) => <h2 className="text-4xl font-bold" {...value} />,
+				h3: (value) => <h3 className="text-3xl font-bold" {...value} />,
+				h4: (value) => <h4 className="text-2xl font-bold" {...value} />,
+				h5: (value) => <h5 className="text-xl font-bold" {...value} />,
+				h6: (value) => <h6 className="text-lg font-bold" {...value} />,
 				p: (value) => {
 					const hasBlankCheckbox =
 						(value.children as any[]).length > 0 &&
@@ -136,8 +142,39 @@ export function Markdown(props: {
 						(value.children as any[]).length > 0 &&
 						typeof (value.children as any[])[0] === "string" &&
 						(value.children as any[])[0].toLowerCase().startsWith("[x] ");
+					const hasAlert =
+						(value.children as any[]).length > 0 &&
+						typeof (value.children as any[])[0] === "string" &&
+						(value.children as any[])[0].toLowerCase().startsWith("[!");
+					let alertType: string = "";
+					let alertColor: string | undefined = undefined;
+					if (hasAlert) {
+						const stringCand = (value.children as any[])[0].toLowerCase();
+						if (stringCand.startsWith("[!note]")) {
+							alertType = "Note";
+							alertColor = "#00b3ff";
+						} else if (stringCand.startsWith("[!tip]")) {
+							alertType = "Tip";
+							alertColor = "#4db800";
+						} else if (stringCand.startsWith("[!important]")) {
+							alertType = "Important";
+							alertColor = "#947eff";
+						} else if (stringCand.startsWith("[!warning]")) {
+							alertType = "Warning";
+							alertColor = "#ff8733";
+						} else if (stringCand.startsWith("[!caution]")) {
+							alertType = "Caution";
+							alertColor = "#ff3333";
+						} else {
+							alertType = stringCand.substring(
+								2,
+								stringCand.indexOf("]"),
+							);
+						}
+					}
+
 					return hasBlankCheckbox || hasTickedCheckbox ? (
-						<div className={"flex flex-row mb-3"} {...value}>
+						<div className="flex flex-row mb-3" {...value}>
 							<input
 								className="mr-2 h-4 w-4 self-center"
 								type="checkbox"
@@ -150,8 +187,40 @@ export function Markdown(props: {
 								]}
 							</p>
 						</div>
+					) : hasAlert ? (
+						<p
+							className="my-4 shadow-lg border-l-[6px] border-2 border-midGray border-solid pl-4 border-l-black dark:border-l-white bg-white dark:bg-black py-2 rounded-lg"
+							style={{ borderLeftColor: alertColor }}
+							{...value}
+						>
+							<p
+								className="font-bold text-xl font-mono mb-2"
+								style={{ color: alertColor }}
+							>
+								{alertType === "Note" ? (
+									<NoteIcon color={alertColor} />
+								) : alertType === "Tip" ? (
+									<TipIcon color={alertColor} />
+								) : alertType === "Important" ? (
+									<ImportantIcon color={alertColor} />
+								) : alertType === "Warning" ? (
+									<WarningIcon color={alertColor} />
+								) : alertType === "Caution" ? (
+									<CautionIcon color={alertColor} />
+								) : (
+									"!"
+								)}
+								{alertType}
+							</p>
+							{[
+								(value.children as string[])[0].substring(
+									(value.children as string[])[0].indexOf("]") + 1,
+								),
+								...value.children.toSpliced(0, 1),
+							]}
+						</p>
 					) : (
-						<p className="mb-3" {...value}></p>
+						<p className="mb-3" {...value} />
 					);
 				},
 				code: (value) => (
@@ -259,6 +328,117 @@ export function ExternalLinkIcon(props: { colored?: boolean }) {
 					stroke-width="2"
 					stroke-linecap="round"
 					stroke-linejoin="round"
+				/>
+			</g>
+		</svg>
+	);
+}
+
+function NoteIcon(props: { color?: string }) {
+	return (
+		<svg
+			className="h-8 w-8 inline mr-2"
+			viewBox="0 0 24 24"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<path
+				className="fill-black dark:fill-white"
+				d="M12.6761 19.9589C12.9508 20.0228 12.976 20.3827 12.7084 20.4719L11.1284 20.9919C7.15839 22.2719 5.06839 21.2019 3.77839 17.2319L2.49839 13.2819C1.21839 9.31187 2.27839 7.21187 6.24839 5.93187L6.77238 5.75834C7.17525 5.62493 7.56731 6.02899 7.45292 6.43766C7.39622 6.64023 7.34167 6.85164 7.28839 7.07188L6.30839 11.2619C5.20839 15.9719 6.81839 18.5719 11.5284 19.6919L12.6761 19.9589Z"
+				style={{ fill: props.color }}
+			/>
+			<path
+				className="fill-black dark:fill-white"
+				d="M17.1702 3.20854L15.5002 2.81854C12.1602 2.02854 10.1702 2.67854 9.00018 5.09854C8.70018 5.70854 8.46018 6.44854 8.26018 7.29854L7.28018 11.4885C6.30018 15.6685 7.59018 17.7285 11.7602 18.7185L13.4402 19.1185C14.0202 19.2585 14.5602 19.3485 15.0602 19.3885C18.1802 19.6885 19.8402 18.2285 20.6802 14.6185L21.6602 10.4385C22.6402 6.25854 21.3602 4.18854 17.1702 3.20854ZM15.2902 13.3285C15.2002 13.6685 14.9002 13.8885 14.5602 13.8885C14.5002 13.8885 14.4402 13.8785 14.3702 13.8685L11.4602 13.1285C11.0602 13.0285 10.8202 12.6185 10.9202 12.2185C11.0202 11.8185 11.4302 11.5785 11.8302 11.6785L14.7402 12.4185C15.1502 12.5185 15.3902 12.9285 15.2902 13.3285ZM18.2202 9.94854C18.1302 10.2885 17.8302 10.5085 17.4902 10.5085C17.4302 10.5085 17.3702 10.4985 17.3002 10.4885L12.4502 9.25854C12.0502 9.15854 11.8102 8.74854 11.9102 8.34854C12.0102 7.94854 12.4202 7.70854 12.8202 7.80854L17.6702 9.03854C18.0802 9.12854 18.3202 9.53854 18.2202 9.94854Z"
+				style={{ fill: props.color }}
+			/>
+		</svg>
+	);
+}
+
+function TipIcon(props: { color?: string }) {
+	return (
+		<svg
+			className="h-8 w-8 inline mr-2"
+			viewBox="0 0 24 24"
+			xmlns="http://www.w3.org/2000/svg"
+			fill="none"
+		>
+			<path
+				className="stroke-black dark:stroke-white"
+				style={{ stroke: props.color }}
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				stroke-width="2"
+				d="M10 18v-.107c0-.795-.496-1.488-1.117-1.984a5 5 0 1 1 6.235 0c-.622.497-1.118 1.189-1.118 1.984V18m-4 0v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2m-4 0h4m6-6h1M4 12H3m9-8V3m5.657 3.343.707-.707m-12.02.707-.708-.707M12 15v-2"
+			/>
+		</svg>
+	);
+}
+
+function ImportantIcon(props: { color?: string }) {
+	return (
+		<svg
+			className="h-8 w-8 inline mr-2 fill-black dark:fill-white"
+			style={{ fill: props.color }}
+			viewBox="0 0 32 32"
+			version="1.1"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<path d="M1.728 20.992q-0.416 1.6 0.416 3.008 0.832 1.44 2.432 1.856t3.040-0.384q0.832-0.48 2.56-1.92t3.168-2.912q-0.608 2.016-0.96 4.192t-0.384 3.168q0 1.664 1.184 2.848t2.816 1.152 2.816-1.152 1.184-2.848q0-0.96-0.384-3.168t-0.928-4.192q1.44 1.504 3.168 2.944t2.528 1.888q1.44 0.832 3.040 0.384t2.432-1.856 0.416-3.008-1.888-2.464q-0.864-0.48-2.944-1.248t-4.064-1.28q2.016-0.512 4.096-1.28t2.912-1.248q1.44-0.832 1.888-2.432t-0.416-3.040q-0.832-1.44-2.432-1.856t-3.040 0.384q-0.832 0.512-2.528 1.92t-3.168 2.912q0.576-1.984 0.928-4.192t0.384-3.168q0-1.632-1.184-2.816t-2.816-1.184-2.816 1.184-1.184 2.816q0 0.992 0.384 3.168t0.96 4.192q-1.44-1.472-3.168-2.88t-2.56-1.952q-1.44-0.8-3.040-0.384t-2.432 1.856-0.416 3.040 1.888 2.432q0.832 0.48 2.912 1.248t4.128 1.28q-2.016 0.512-4.096 1.28t-2.944 1.248q-1.44 0.832-1.888 2.464z"></path>
+		</svg>
+	);
+}
+
+function WarningIcon(props: { color?: string }) {
+	return (
+		<svg
+			className="h-8 w-8 inline mr-2"
+			viewBox="0 0 512 512"
+			version="1.1"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<g
+				id="Page-1"
+				stroke="none"
+				stroke-width="1"
+				fill="none"
+				fill-rule="evenodd"
+			>
+				<g
+					id="add"
+					className="fill-black dark:fill-white"
+					style={{ fill: props.color }}
+					transform="translate(32.000000, 42.666667)"
+				>
+					<path
+						d="M246.312928,5.62892705 C252.927596,9.40873724 258.409564,14.8907053 262.189374,21.5053731 L444.667042,340.84129 C456.358134,361.300701 449.250007,387.363834 428.790595,399.054926 C422.34376,402.738832 415.04715,404.676552 407.622001,404.676552 L42.6666667,404.676552 C19.1025173,404.676552 7.10542736e-15,385.574034 7.10542736e-15,362.009885 C7.10542736e-15,354.584736 1.93772021,347.288125 5.62162594,340.84129 L188.099293,21.5053731 C199.790385,1.04596203 225.853517,-6.06216498 246.312928,5.62892705 Z M224,272 C208.761905,272 197.333333,283.264 197.333333,298.282667 C197.333333,313.984 208.415584,325.248 224,325.248 C239.238095,325.248 250.666667,313.984 250.666667,298.624 C250.666667,283.264 239.238095,272 224,272 Z M245.333333,106.666667 L202.666667,106.666667 L202.666667,234.666667 L245.333333,234.666667 L245.333333,106.666667 Z"
+						id="Combined-Shape"
+					></path>
+				</g>
+			</g>
+		</svg>
+	);
+}
+
+function CautionIcon(props: { color?: string }) {
+	return (
+		<svg
+			className="h-8 w-8 inline mr-2"
+			version="1.1"
+			id="_x32_"
+			xmlns="http://www.w3.org/2000/svg"
+			viewBox="0 0 512 512"
+		>
+			<g>
+				<path
+					className="fill-black dark:fill-white"
+					style={{ fill: props.color }}
+					d="M387.317,0.005H284.666h-57.332h-102.65L0,124.688v102.67v57.294v102.67l124.684,124.674h102.65h57.332
+		h102.651L512,387.321v-102.67v-57.294v-102.67L387.317,0.005z M255.45,411.299c-19.082,0-34.53-15.467-34.53-34.549
+		c0-19.053,15.447-34.52,34.53-34.52c19.082,0,34.53,15.467,34.53,34.52C289.98,395.832,274.532,411.299,255.45,411.299z
+		 M283.414,278.692c0,15.448-12.516,27.964-27.964,27.964c-15.458,0-27.964-12.516-27.964-27.964l-6.566-135.368
+		c0-19.072,15.447-34.54,34.53-34.54c19.082,0,34.53,15.467,34.53,34.54L283.414,278.692z"
 				/>
 			</g>
 		</svg>
