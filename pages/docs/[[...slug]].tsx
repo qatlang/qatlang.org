@@ -890,12 +890,12 @@ export default function Page(props: { files: DocPage[]; versions: string[] }) {
 					} else if (typeof pages[i].content !== "string") {
 						let foundInMain = false;
 						for (
-							let i = 0;
-							i < (pages[i].content as DocPageGroup).pages.length;
-							i++
+							let j = 0;
+							j < (pages[i].content as DocPageGroup).pages.length;
+							j++
 						) {
 							if (
-								(pages[i].content as DocPageGroup).pages[i]
+								(pages[i].content as DocPageGroup).pages[j]
 									.slugComponent === slugVal[1]
 							) {
 								foundInMain = true;
@@ -1362,7 +1362,7 @@ export default function Page(props: { files: DocPage[]; versions: string[] }) {
 									{versionedPage.title}
 								</div>
 								{versionedPage.fallbackVersion && (
-									<div className="px-3 py-1 mb-4 italic bg-[#cccccc] dark:bg-[#444444] rounded-lg w-fit">
+									<div className="px-3 py-1 mb-2 italic bg-[#cccccc] dark:bg-[#444444] rounded-lg w-fit">
 										Since {versionedPage.fallbackVersion} version
 									</div>
 								)}
