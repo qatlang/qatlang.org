@@ -143,7 +143,7 @@ export default function Downloads(props: {
 			<Markdown
 				className="text-sm"
 				children={
-					"For installation instructions, visit the [documentation](/docs)"
+					"For installation instructions, visit the [documentation](/docs/installation)"
 				}
 			/>
 			<div

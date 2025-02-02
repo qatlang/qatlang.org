@@ -1,0 +1,45 @@
+title: Windows
+slug: windows
+index: 1
+
+---
+
+#### Extract the release archive
+
+If you haven't yet downloaded the latest version of the compiler, go to the [downloads](../../downloads) page. You will get an archive file with the `.zip` extension.
+
+Extract the archive to a folder, preferably a folder in the `C:/` drive or on the `Desktop`. It is recommended to extract the contents to a folder that does not require additional privileges. The qat compiler require access to contents of that folder for specific commands and for finding the standard library and toolchain files.
+
+#### Update the Path environment variable
+
+Open the start menu by pressing the **Windows** key, and search for `system environment`.
+
+![Windows Start Menu Search](/images/docs/installation/windows_start_menu_search.png)
+
+Select the option present in the control panel, as seen above. You will see a new dialog box open. Look for the button named `Environment Variables...` near to the bottom to the dialog box.
+
+![Windows System Properties](/images/docs/installation/windows_system_properties.png)
+
+Click on it to open the next dialog box that lists all environment variables. You will see two sections. One named `User variables for ...` and another named `System variables`. There is variable named `Path` in both sections. It is highly recommended that you update the variable in the `System variables` section, as the changes will apply to the entire system. The first section applies only to the current user, but if you are fine with that, you may opt for that.
+
+![Windows Environment Variables Menu](/images/docs/installation/windows_env_vars_menu.png)
+
+Double click on the environment variable named `Path` to open up a new dialog where you can edit the variable. You will see a list of values that are part of the `Path` variable. **Do not change** any of the values you already see there.
+
+![Windows Environment Variable Edit](/images/docs/installation/windows_env_var_edit.png)
+
+Double click on the first blank line you see to enter a new value to the list. If you extracted the release archive to the folder `qat` inside the `C:\` drive, which means the path to your qat installation is `C:\qat`. But the compiler will be present in `C:\qat\bin`, so that is the value that you add to the list. If you extracted the contents of the archive somewhere else, the value will be different for you. **Remember that the `bin` folder inside the main folder should also be included in the path**.
+
+![Windows Environment Variable Value](/images/docs/installation/windows_env_var_value.png)
+
+Press `Ok` on all the dialog boxes to make sure that the updates have been saved.
+
+[!NOTE] Modern Windows operating systems also accepts the unix path separator `/`, which means that `C:/qat/bin` is just as valid as `C:\qat\bin`.
+
+#### Verify the installation
+
+Open a new terminal session and run the command `qat version`. Check the output to see if it has the version of the compiler, to verify that your installation of qat is successful. If you see the version in the output like below, enjoy!!
+
+![Compiler Output](/images/docs/installation/compiler_output.png)
+
+If you get an output saying that the command qat was not found, or something similar, then that might mean that the Path might not be updated. Follow the above steps again and see if the path to the compiler is present in the list. If it is, try restarting your system to see if the changes have taken effect.

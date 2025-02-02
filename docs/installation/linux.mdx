@@ -1,0 +1,39 @@
+title: Linux
+slug: linux
+index: 0
+
+---
+
+#### Extract the release archive
+
+If you haven't yet downloaded the latest version of the compiler, go to the [downloads](../../downloads) page. You will get an archive file with the `.zip` extension.
+
+Extract the archive to a directory, preferably one under the home directory of the current user. It is recommended to extract the contents to a directory that does not require additional privileges. The qat compiler require access to contents of that directory for specific commands and for finding the standard library and toolchain files.
+
+#### Update the PATH environment variable
+
+You have to update the `PATH` environment variable to include the directory of the compiler for qat. If you extracted the downloaded archive to a folder named `qat` under the home directory, then the path of the installation is `~/qat`, but the compiler is present in `~/qat/bin`, so that is the value to be included in the `PATH` environment variable.
+
+If your terminal shell is `bash`, this is done by editing the file at path `~/.bashrc` and if your terminal shell is `zsh`, this is done by editing the file at path `~/.zshrc`. If you are unsure, run the command `echo $0` to find if the output has `bash` or `zsh` in it. If you have a different shell, the name of the file could be different.
+
+[!TIP] If you are trying to open this file in the file explorer, since the name of such files begin with `.`, it will be hidden and you will have to enable the display of hidden files, which might be disabled by default in some systems. ![Enable hidden files](/images/docs/installation/linux_hidden_file.png)
+
+If no such file exists for the corresponding shell, create the file using `touch ~/.bashrc` or `touch ~/.zshrc`.
+
+#### Edit the shell configuration file
+
+Open file in a text editor of your liking and add the line `export PATH="$PATH:~/qat/bin"`, but make sure that you replace `~/qat/bin` with the path of the compiler according to your installation, if you opted for something different. Save and close the file.
+
+![Select shell config file](/images/docs/installation/linux_select_file.png)
+
+#### Source the configuration file to see changes
+
+If you are still in the terminal, the `PATH` variable will not be updated soon after saving the file. It will only be automatically updated the next time you open the terminal. But if you want the changes to take effect now, run `source ~/.bashrc` or `source ~/.zshrc` or `source your_shell_config_file`.
+
+#### Verify installation
+
+Run the command `qat version` and check that the output has the version of the compiler, to verify that your installation of qat is successful. If you see the version in the output like below, enjoy!!
+
+![Compiler Output](/images/docs/installation/compiler_output.png)
+
+If you see something like `command not found: qat`, then that means the `PATH` environment variable has not been updated yet. Close and reopen your terminal and it should work.
