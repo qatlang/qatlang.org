@@ -127,12 +127,24 @@ export function Markdown(props: {
 						</li>
 					);
 				},
-				h1: (value) => <h1 className="text-5xl font-bold" {...value} />,
-				h2: (value) => <h2 className="text-4xl font-bold" {...value} />,
-				h3: (value) => <h3 className="text-3xl font-bold" {...value} />,
-				h4: (value) => <h4 className="text-2xl font-bold" {...value} />,
-				h5: (value) => <h5 className="text-xl font-bold" {...value} />,
-				h6: (value) => <h6 className="text-lg font-bold" {...value} />,
+				h1: (value) => (
+					<h1 className="text-5xl font-bold mt-5 mb-3" {...value} />
+				),
+				h2: (value) => (
+					<h2 className="text-4xl font-bold mt-5 mb-3" {...value} />
+				),
+				h3: (value) => (
+					<h3 className="text-3xl font-bold mt-5 mb-3" {...value} />
+				),
+				h4: (value) => (
+					<h4 className="text-2xl font-bold mt-4 mb-2" {...value} />
+				),
+				h5: (value) => (
+					<h5 className="text-xl font-bold mt-4 mb-2" {...value} />
+				),
+				h6: (value) => (
+					<h6 className="text-lg font-bold mt-3 mb-1" {...value} />
+				),
 				p: (value) => {
 					const hasBlankCheckbox =
 						(value.children as any[]).length > 0 &&
@@ -174,7 +186,7 @@ export function Markdown(props: {
 					}
 
 					return hasBlankCheckbox || hasTickedCheckbox ? (
-						<div className="flex flex-row mb-3" {...value}>
+						<div className="flex flex-row mb-2" {...value}>
 							<input
 								className="mr-2 h-4 w-4 self-center"
 								type="checkbox"
@@ -220,7 +232,7 @@ export function Markdown(props: {
 							]}
 						</p>
 					) : (
-						<p className="mb-3" {...value} />
+						<p className="mb-2" {...value} />
 					);
 				},
 				code: (value) => (
@@ -285,7 +297,7 @@ export function Markdown(props: {
 				img: (value) => (
 					// eslint-disable-next-line @next/next/no-img-element
 					<img
-						className="my-4 rounded-2xl max-w-[100%]"
+						className="my-4 rounded-lg max-w-[100%]"
 						alt={
 							value.src?.startsWith("image:")
 								? "/api/images?id=" +
