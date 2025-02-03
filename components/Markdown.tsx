@@ -81,6 +81,24 @@ export function CodeBlock(props: CodeProps & { allowHTML: boolean }) {
 	);
 }
 
+function getHeaderId(value: string) {
+	let id = "";
+	for (let i = 0; i < value.length; i++) {
+		if (
+			(value.charCodeAt(i) > 47 && value.charCodeAt(i) < 58) ||
+			(value.charCodeAt(i) > 64 && value.charCodeAt(i) < 91) ||
+			(value.charCodeAt(i) > 96 && value.charCodeAt(i) < 123) ||
+			value.charCodeAt(i) === "_".charCodeAt(0)
+		) {
+			id += value[i];
+		} else if (value[i] === " " && !id.endsWith("_")) {
+			id += "_";
+		}
+	}
+	id = id.toLowerCase();
+	return id;
+}
+
 export function Markdown(props: {
 	className?: string;
 	children: string;
@@ -127,24 +145,66 @@ export function Markdown(props: {
 						</li>
 					);
 				},
-				h1: (value) => (
-					<h1 className="text-5xl font-bold mt-5 mb-3" {...value} />
-				),
-				h2: (value) => (
-					<h2 className="text-4xl font-bold mt-5 mb-3" {...value} />
-				),
-				h3: (value) => (
-					<h3 className="text-3xl font-bold mt-5 mb-3" {...value} />
-				),
-				h4: (value) => (
-					<h4 className="text-2xl font-bold mt-4 mb-2" {...value} />
-				),
-				h5: (value) => (
-					<h5 className="text-xl font-bold mt-4 mb-2" {...value} />
-				),
-				h6: (value) => (
-					<h6 className="text-lg font-bold mt-3 mb-1" {...value} />
-				),
+				h1: (value) => {
+					const id = getHeaderId((value.children as any[]).join("_"));
+					return (
+						<h1
+							id={id}
+							className="text-5xl font-bold mt-5 mb-3"
+							{...value}
+						/>
+					);
+				},
+				h2: (value) => {
+					const id = getHeaderId((value.children as any[]).join("_"));
+					return (
+						<h2
+							id={id}
+							className="text-4xl font-bold mt-5 mb-3"
+							{...value}
+						/>
+					);
+				},
+				h3: (value) => {
+					const id = getHeaderId((value.children as any[]).join("_"));
+					return (
+						<h3
+							id={id}
+							className="text-3xl font-bold mt-5 mb-3"
+							{...value}
+						/>
+					);
+				},
+				h4: (value) => {
+					const id = getHeaderId((value.children as any[]).join("_"));
+					return (
+						<h4
+							id={id}
+							className="text-2xl font-bold mt-4 mb-2"
+							{...value}
+						/>
+					);
+				},
+				h5: (value) => {
+					const id = getHeaderId((value.children as any[]).join("_"));
+					return (
+						<h5
+							id={id}
+							className="text-xl font-bold mt-4 mb-2"
+							{...value}
+						/>
+					);
+				},
+				h6: (value) => {
+					const id = getHeaderId((value.children as any[]).join("_"));
+					return (
+						<h6
+							id={id}
+							className="text-lg font-bold mt-3 mb-1"
+							{...value}
+						/>
+					);
+				},
 				p: (value) => {
 					const hasBlankCheckbox =
 						(value.children as any[]).length > 0 &&
@@ -239,60 +299,98 @@ export function Markdown(props: {
 					<CodeBlock {...value} allowHTML={props.allowHTML ?? false} />
 				),
 				a: (value) => {
-					const isInsideLink =
-						value.href !== undefined &&
-						!value.href.startsWith("http://") &&
-						!value.href.startsWith("https://");
-					let usableHREF = value.href;
-					if (isInsideLink && props.currentURL) {
-						let rootSplit = props.currentURL!.split("/");
-						let linkSplit = value.href!.split("/");
-						let delInd = 0;
-						for (let i = 0; i < linkSplit.length; i++) {
-							if (linkSplit[i] === "..") {
-								rootSplit = rootSplit.toSpliced(
-									rootSplit.length - 1,
-									1,
-								);
-								delInd++;
-							} else if (linkSplit[i] === "") {
-								delInd++;
-							} else {
-								break;
-							}
-						}
-						linkSplit = linkSplit.toSpliced(0, delInd);
-						usableHREF = [...rootSplit, ...linkSplit].join("/");
-					}
-					return (
-						<a
-							className="group inline px-2 py-1 bg-[#0088ff33] hover:bg-[#0088ff55] underline dark:text-[#0088ff] text-[#0055ff] hover:text-[#0000ff] dark:hover:text-[#0099ff] rounded-lg"
-							{...{
-								...value,
-								href: usableHREF,
-								target:
-									value.target ??
-									(isInsideLink ? undefined : "_blank"),
-							}}
-						>
-							{isInsideLink && (
+					if (value.href !== undefined && value.href.startsWith("#")) {
+						return (
+							<div
+								className="inline mx-1 px-2 py-1 bg-[#0088ff33] hover:bg-[#0088ff55] dark:text-[#0088ff] text-[#0055ff] hover:text-[#0000ff] dark:hover:text-[#0099ff] rounded-lg cursor-pointer"
+								onClick={() => {
+									if (document) {
+										document
+											.getElementById(value.href!.substring(1))
+											?.scrollIntoView();
+									}
+								}}
+							>
+								{value.children}
 								<svg
-									className="inline h-5 w-5 mr-1 stroke-[#0088ff] group-hover:stroke-[#0000ff] dark:group-hover:stroke-[#0099ff]"
+									className="h-8 w-8 inline"
 									viewBox="0 0 24 24"
 									fill="none"
 									xmlns="http://www.w3.org/2000/svg"
 								>
 									<path
-										d="M9.16488 17.6505C8.92513 17.8743 8.73958 18.0241 8.54996 18.1336C7.62175 18.6695 6.47816 18.6695 5.54996 18.1336C5.20791 17.9361 4.87912 17.6073 4.22153 16.9498C3.56394 16.2922 3.23514 15.9634 3.03767 15.6213C2.50177 14.6931 2.50177 13.5495 3.03767 12.6213C3.23514 12.2793 3.56394 11.9505 4.22153 11.2929L7.04996 8.46448C7.70755 7.80689 8.03634 7.47809 8.37838 7.28062C9.30659 6.74472 10.4502 6.74472 11.3784 7.28061C11.7204 7.47809 12.0492 7.80689 12.7068 8.46448C13.3644 9.12207 13.6932 9.45086 13.8907 9.7929C14.4266 10.7211 14.4266 11.8647 13.8907 12.7929C13.7812 12.9825 13.6314 13.1681 13.4075 13.4078M10.5919 10.5922C10.368 10.8319 10.2182 11.0175 10.1087 11.2071C9.57284 12.1353 9.57284 13.2789 10.1087 14.2071C10.3062 14.5492 10.635 14.878 11.2926 15.5355C11.9502 16.1931 12.279 16.5219 12.621 16.7194C13.5492 17.2553 14.6928 17.2553 15.621 16.7194C15.9631 16.5219 16.2919 16.1931 16.9495 15.5355L19.7779 12.7071C20.4355 12.0495 20.7643 11.7207 20.9617 11.3787C21.4976 10.4505 21.4976 9.30689 20.9617 8.37869C20.7643 8.03665 20.4355 7.70785 19.7779 7.05026C19.1203 6.39267 18.7915 6.06388 18.4495 5.8664C17.5212 5.3305 16.3777 5.3305 15.4495 5.8664C15.2598 5.97588 15.0743 6.12571 14.8345 6.34955"
+										className="stroke-[#0055ff] dark:stroke-[#0088ff] hover:stroke-[#0000ff] dark:hover:stroke-[#0099ff]"
+										d="M7 8L9 8C11.2091 8 13 9.79086 13 12L13 17"
 										stroke-width="2"
 										stroke-linecap="round"
+										stroke-linejoin="round"
+									/>
+									<path
+										className="stroke-[#0055ff] dark:stroke-[#0088ff] hover:stroke-[#0000ff] dark:hover:stroke-[#0099ff]"
+										d="M16 14L13 17L10 14"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
 									/>
 								</svg>
-							)}
-							{value.children}
-							{!isInsideLink && <ExternalLinkIcon colored />}
-						</a>
-					);
+							</div>
+						);
+					} else {
+						const isInsideLink =
+							value.href !== undefined &&
+							!value.href.startsWith("http://") &&
+							!value.href.startsWith("https://");
+						let usableHREF = value.href;
+						if (isInsideLink && props.currentURL) {
+							let rootSplit = props.currentURL!.split("/");
+							let linkSplit = value.href!.split("/");
+							let delInd = 0;
+							for (let i = 0; i < linkSplit.length; i++) {
+								if (linkSplit[i] === "..") {
+									rootSplit = rootSplit.toSpliced(
+										rootSplit.length - 1,
+										1,
+									);
+									delInd++;
+								} else if (linkSplit[i] === "") {
+									delInd++;
+								} else {
+									break;
+								}
+							}
+							linkSplit = linkSplit.toSpliced(0, delInd);
+							usableHREF = [...rootSplit, ...linkSplit].join("/");
+						}
+						return (
+							<a
+								className="group inline mx-1 px-2 py-1 bg-[#0088ff33] hover:bg-[#0088ff55] underline dark:text-[#0088ff] text-[#0055ff] hover:text-[#0000ff] dark:hover:text-[#0099ff] rounded-lg"
+								{...{
+									...value,
+									href: usableHREF,
+									target:
+										value.target ??
+										(isInsideLink ? undefined : "_blank"),
+								}}
+							>
+								{isInsideLink && (
+									<svg
+										className="inline h-5 w-5 mr-1 stroke-[#0088ff] group-hover:stroke-[#0000ff] dark:group-hover:stroke-[#0099ff]"
+										viewBox="0 0 24 24"
+										fill="none"
+										xmlns="http://www.w3.org/2000/svg"
+									>
+										<path
+											d="M9.16488 17.6505C8.92513 17.8743 8.73958 18.0241 8.54996 18.1336C7.62175 18.6695 6.47816 18.6695 5.54996 18.1336C5.20791 17.9361 4.87912 17.6073 4.22153 16.9498C3.56394 16.2922 3.23514 15.9634 3.03767 15.6213C2.50177 14.6931 2.50177 13.5495 3.03767 12.6213C3.23514 12.2793 3.56394 11.9505 4.22153 11.2929L7.04996 8.46448C7.70755 7.80689 8.03634 7.47809 8.37838 7.28062C9.30659 6.74472 10.4502 6.74472 11.3784 7.28061C11.7204 7.47809 12.0492 7.80689 12.7068 8.46448C13.3644 9.12207 13.6932 9.45086 13.8907 9.7929C14.4266 10.7211 14.4266 11.8647 13.8907 12.7929C13.7812 12.9825 13.6314 13.1681 13.4075 13.4078M10.5919 10.5922C10.368 10.8319 10.2182 11.0175 10.1087 11.2071C9.57284 12.1353 9.57284 13.2789 10.1087 14.2071C10.3062 14.5492 10.635 14.878 11.2926 15.5355C11.9502 16.1931 12.279 16.5219 12.621 16.7194C13.5492 17.2553 14.6928 17.2553 15.621 16.7194C15.9631 16.5219 16.2919 16.1931 16.9495 15.5355L19.7779 12.7071C20.4355 12.0495 20.7643 11.7207 20.9617 11.3787C21.4976 10.4505 21.4976 9.30689 20.9617 8.37869C20.7643 8.03665 20.4355 7.70785 19.7779 7.05026C19.1203 6.39267 18.7915 6.06388 18.4495 5.8664C17.5212 5.3305 16.3777 5.3305 15.4495 5.8664C15.2598 5.97588 15.0743 6.12571 14.8345 6.34955"
+											stroke-width="2"
+											stroke-linecap="round"
+										/>
+									</svg>
+								)}
+								{value.children}
+								{!isInsideLink && <ExternalLinkIcon colored />}
+							</a>
+						);
+					}
 				},
 				img: (value) => (
 					// eslint-disable-next-line @next/next/no-img-element
