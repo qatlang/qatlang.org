@@ -1,0 +1,125 @@
+title: Command Line Reference
+index: 1
+slug: command_line_reference
+
+---
+
+[Commands](#commands) -> [Build project & execute](#build_project_execute) [Create a new project](#create_a_new_project) [Version Information](#version_information) [Show Information](#show_information)
+
+[Arguments](#arguments) -> [-o, --output](#output_directory) [--target](#target_triple) [--sysroot](#sysroot) [--panic](#panic_modes)
+
+[Flags](#flags) -> [--release](#release_flag) [--debug](#debug_flag) [--releaseWithDebugInfo](#release_with_debug_info_flag) [--no-std](#no_standard_library_flag) [--freestanding](#freestanding_flag) [--no-colors](#disable_colors_flag) [--clear-llvm](#clear_llvm_files_flag) [--report](#report_flag)
+
+Here is the list of various commands, arguments and flags exposed by the qat compiler.
+
+[!NOTE] Contextual variables in commands are enclosed in `[` and `]` below, and the value to be used is dependent on your specific scenario. You are expected to ignore the `[` and `]` symbols in the actual value.
+
+### Commands
+
+##### Build project & execute
+
+- `qat build [filename]` - Build a library or executable
+- `qat run [filename]` - Build an executable, run it and show the output and status code
+
+`[filename]` is the name of the primary file of the executable or the library you want to build or execute. In case of a library, as in a filesystem library, the name of the file usually ends with the extension `.lib.qat`
+
+Supported arguments: [--output](#output_directory), [--target](#target_triple), [--sysroot](#sysroot), [--clang](#clang_path), [--linker](#linker_path), [--panic](#panic_modes)
+
+Supported flags: [--release](#release_flag), [--debug](#debug_flag), [--releaseWithDebugInfo](#release_with_debug_info_flag), [--no-std](#no_standard_library_flag), [--freestanding](#freestanding_flag), [--no-colors](#disable_colors_flag), [--clear-llvm](#clear_llvm_files_flag), [--report](#report_flag)
+
+##### Create a new project
+
+`qat new [project_name]`
+
+You can create a new qat project using this command.
+
+- By default, the project is assumed to be an executable. If you want to create a library project, provide the `--lib` flag.
+- By default, a version control repository is set up. The default version control system used is `git`. If you do not want a repository to be created for the project, you can provide the argument `--vcs=none`
+
+##### Version information
+
+- `qat version` - Displays the full version information about the compiler, including additional information about the build environment.
+- `qat --version` - Displays only the version of the compiler without any additional metadata. Useful in scenarios where the version of the compiler has to be determined easily. A sample output will look like `v0.9.1`
+
+##### Show information
+
+- `qat show build` - Displays detailed information about the environment the compiler was built in
+- `qat show web` - Displays information about the websites and URLs related to the project
+- `qat show targets` - Displays list of all target triplets supported by the compiler
+
+### Arguments
+
+##### Output directory
+
+`-o [output_directory]` or `--output=[output_directory]`
+
+_(optional)_ This sets the output directory of the build results and artefacts. By default, a folder named `.qatcache` will be created in the current working directory of the terminal or shell environment. All binary, object, intermediate and library files will be created in this folder. Provide this only if you don't want the default behaviour.
+
+##### Target Triple
+
+`--target [target_triple]` or `--target=[target_triple]`
+
+_(optional)_ The target triple of the system the program is compiled for. It can be provided while building a project. The supported values are: `x86_64-unknown-linux-gnu`, `x86_64-pc-linux-gnu`, `aarch64-unknown-linux-gnu`, `aarch64-pc-linux-gnu`, `x86_64-pc-windows-msvc`
+
+##### Sysroot
+
+`--sysroot [sysroot_path]` or `--sysroot=[sysroot_path]`
+
+_(optional)_ For cross compilations and compilations using a toolchain different than the default. The value expected is a valid path that can act as the root path of the target system for compilation.
+
+##### Clang path
+
+`--clang [clang_path]` or `--clang=[clang_path]`
+
+_(optional)_ Provide path to the clang compiler to be used for compiling the LLVM IR. Remember that the clang compiler found at this path should comply to the version requirements of the qat compiler. There will an error thrown if the version does not comply. By default, qat looks in the PATH environment variable and finds a suitable clang compiler, if present. Provide this only if you don't want the default behaviour.
+
+##### Linker path
+
+`--linker [linker_path]` or `--linker=[linker_path]`
+
+_(optional)_ Provide path to the linker to be used for linking the object files generated into a library or executable. Remember that linkers are usually specific to the platform you are targeting your project to. All major platforms are supported by lld (LLVM's cross platform linker), which is used by default by the qat compiler and detected from the PATH environment variable.
+
+##### Panic Modes
+
+`--panic=[mode]`
+
+_(optional)_ You can customize how the language handles panics for your program. This optional argument can be provided while building a project. The possible values are:
+
+- `exit-thread` - This is the default behaviour. If there occurs a panic, the thread in which the panic occured exits and it is up to the parent thread of that thread to handle the error. If the panic occured in the main thread, then the program exits with a non-zero status code.
+- `exit-program` - If a panic occurs in any thread, the entire program is halted with a non-zero status code.
+- `handler` - If a panic occurs in any thread, the message of the panic is passed to a handler function defined by the user. It is up to the user to define how the panic behaves.
+- `resume` - If a panic occurs in any thread, the control flow is resumed without exiting that thread. This essentially makes the panics behave like logs.
+
+### Flags
+
+##### Release flag
+
+`--release` _optional_ - Switches the build mode to `Release`. In such builds, the debug info will not be present and more optimisations are done to make the code more performant.
+
+##### Debug flag
+
+`--debug` _optional_ - Switches the build mode to `Debug`. The debug info will be present in the output and debug logs will be active in the program. There are fewer optimisations and the output size will usually be bigger than release builds.
+
+##### Release With Debug Info flag
+
+`--releaseWithDebugInfo` _optional_ - Switches the build mode to `Release`, but debug info will be present. This is useful in scenarios when it is crucial to provide users with the ability to debug the program.
+
+##### No Standard Library flag
+
+`--no-std` _optional_ - This instructs the compiler to compile without looking for the standard library. Remember that you will lose the support of common datatypes and functions in the standard library. This is recommended for platforms that are not directly supported by the compiler.
+
+##### Freestanding flag
+
+`--freestanding` _optional_ - This instructs the compiler that the target platform of the program is a freestanding environment. This flag also includes the `--no-std` flag, so the standard library is considered not to be present. The entrypoint for such a program might not be the `main` function. This is usually useful in kernel programming and operating systems development.
+
+##### Disable colors flag
+
+`--no-colors` _optional_ - Disables all colored output. This is typically useful in shell environment without a graphical user interface, where you want to process the output of the compiler.
+
+##### Clear LLVM files flag
+
+`--clear-llvm` _optional_ - Hints to the compiler that the llvm files generated during compilation has to be cleaned when it is no longer useful.
+
+##### Report flag
+
+`--report` _optional_ - Turns on compiler statistics reports. When the compilation is complete, various information about the performance of the compiler and the code that was processed will be displayed.
