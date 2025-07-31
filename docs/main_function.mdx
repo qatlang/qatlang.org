@@ -1,0 +1,56 @@
+title: The main function
+index: 2
+slug: main_function
+
+---
+
+#### Creating files in the language
+
+- The extension to be used for files in the language, is `.qat`
+- qat has libraries on the filesystem level, and for the root file of such a library, you can use the extension `.lib.qat`
+
+#### The main function
+
+The `main` function represents the entrypoint of an executable program in the language. `main` is not a keyword in the language, but when a function is named so, it has a special meaning to the compiler. There are two possible syntaxes for the main function:
+
+###### Simple syntax
+
+```qat
+pub main -> int [
+	give 0.
+]
+```
+
+In the above function,
+
+- The keyword `pub` means that the function is public. The `main` function is always required to be public.
+- The part `-> int` means that the function will give a value of type `int` as its result. The `int` type is an integer datatype that can represent positive and negative integers.
+- This variant of the `main` function does not receive any arguments, so we begin the body of the function with `[`. Blocks in qat are always enclosed in `[` and `]`
+- A unit of instruction in a function is called a statement. Statements in qat always end with the `.` symbol. It is the statement terminator.
+- `give 0.` is called a **give statement**. It is a statement that gives the result value of the function.
+- This variant of the `main` function receives no arguments.
+- In conclusion, the above code represents a `main` function that gives the result of `0`.
+
+###### Syntax to accept arguments
+
+```qat
+pub main -> int
+(args :: slice![bytestring]) [
+	give 0.
+]
+```
+
+Most things are same in this syntax compared to the previous one, except for the part `(args :: slice![bytestring])`
+
+- If a function receives arguments, it is indicated by providing the argument names and types with `(` and `)`. This argument list is provided after the given type of the function. If there are multiple arguments, they are separated with a `,`
+- `args` is the name of the argument and the symbol `::` is used to provide the type of the argument after the name
+- `slice![bytestring]` is the type of the argument `args`. The meaning of this type will be explained later.
+- `args` can be used to get the individual command line arguments.
+- The `main` function can atmost have just one argument.
+- In conclusion, the above code represents a `main` function that receives an argument named `args` of type `slice![bytestring]`, that gives the result of `0`.
+
+You can use either syntax to write an executable program. If you want to receive command line arguments, you have to use the second syntax.
+
+#### Status code
+
+The `give 0.` is the statement representing the given value of the function. In your operating system, the value given by the `main` function determines the status code of the program. The value `0` represents the successful termination of the program in all operating systems. Other values can refer to predefined errors specific to the operating system.
