@@ -302,7 +302,7 @@ export function Markdown(props: {
 					if (value.href !== undefined && value.href.startsWith("#")) {
 						return (
 							<div
-								className="inline mx-1 px-2 py-1 bg-[#0088ff33] hover:bg-[#0088ff55] dark:text-[#0088ff] text-[#0055ff] hover:text-[#0000ff] dark:hover:text-[#0099ff] rounded-lg cursor-pointer"
+								className="inline-block mb-1 mx-1 px-2 bg-[#0088ff33] hover:bg-[#0088ff55] dark:text-[#0088ff] text-[#0055ff] hover:text-[#0000ff] dark:hover:text-[#0099ff] rounded-lg cursor-pointer"
 								onClick={() => {
 									if (document) {
 										document
@@ -313,7 +313,7 @@ export function Markdown(props: {
 							>
 								{value.children}
 								<svg
-									className="h-8 w-8 inline"
+									className="h-7 w-7 inline"
 									viewBox="0 0 24 24"
 									fill="none"
 									xmlns="http://www.w3.org/2000/svg"
